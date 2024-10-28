@@ -42,9 +42,9 @@ function getSession() {
       const tokenResult = await AsyncStorage.getItem("token");
 
       setToken(tokenResult);
+      
       if (tokenResult == undefined || tokenResult == null) {
         await AsyncStorage.removeItem("token");
-
         router.replace("../sign-in");
         setSession(false);
       } else {
@@ -61,11 +61,14 @@ function getSession() {
           });
 
           const result = await response.json();
+
           if (result.error) {
             throw new TypeError('Failed');
           }
+
           setSession(true);
         } catch (error) {
+          
           console.log("error", error);
           await AsyncStorage.removeItem("token");
 
@@ -79,6 +82,9 @@ function getSession() {
   return { session, setSession };
 }
 
+async function removeToken() {
+  await AsyncStorage.removeItem("token");
+}
 //controlls the auth logic
 export function SessionProvider({ children }: PropsWithChildren) {
   const { session, setSession } = getSession();
@@ -90,6 +96,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
           setSession(true);
         },
         signOut: () => {
+          removeToken();
           setSession(false);
         },
         session,

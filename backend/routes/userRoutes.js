@@ -64,6 +64,24 @@ router.post("/login", async (req, res) => {
     }
 });
 
+router.post("/update", async(req, res) => {
+    try{
+        const {token, firstName, lastName} = req.body;
+        var decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        userID =decoded.id;
+
+        await User.findByIdAndUpdate(userID, {firstName: firstName, lastName: lastName})
+
+        res.status(200).json({success: 'User Updated' });
+
+    }catch(error)
+    {
+        res.status(500).json({ error: "Failed to update user" });
+        console.error("Error:", error);
+    }
+})
+
 router.post("/verify", async (req, res)=>
 {
     try{

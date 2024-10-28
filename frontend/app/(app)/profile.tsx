@@ -1,77 +1,87 @@
+//External Imports
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useEffect, useState } from "react";
 import { Pressable, Text, View, StyleSheet, TextInput } from "react-native";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useSession } from "../../components/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+//Internal Imports
+import LogoutButton from "@/components/logoutButton";
+import UserIcon from '../../components/userIcon'
+import ProfileModal from "@/components/profileModal";
+import { ThemeColors } from "@/constants/Colors";
 
-function getFirstName() {
-    const [firstName, setFirstName] = useState<string>();
-    useEffect(() => {
-        async function getFromStorage() {
-            const result = await AsyncStorage.getItem("firstName");
-            if (result != null) {
-                setFirstName(result)
-            }
-        }
-        getFromStorage()
-    })
-    return { firstName, setFirstName }
-}
-function getLastName() {
-    const [lastName, setLastName] = useState<string>();
-    useEffect(() => {
-        async function getFromStorage() {
-            const result = await AsyncStorage.getItem("lastName");
-
-            if (result != null) {
-                setLastName(result)
-            }
-        }
-        getFromStorage()
-    })
-    return { lastName, setLastName }
-}
 
 export default function Profile() {
-    const { signOut, session } = useSession();
+    const [modalVisible, setModalVisible] = useState(false);
 
-    const { firstName, setFirstName } = getFirstName();
-    const {lastName, setLastName} = getLastName();
-    const [changableFirstName, setChangableFirstName] = useState(firstName)
-    const [changableLastName, setChangableLastName] = useState(lastName)
-    setChangableLastName(lastName)
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
 
-    async function updateName(dataStorageName: string,dataName: string | undefined, changeableDataName: string |undefined)
-    {
-        if(dataName != changeableDataName && changeableDataName != undefined)
-        {
-            await AsyncStorage.setItem(dataStorageName, changeableDataName);
+    //At first render
+    useEffect(() => {
+        getFromStorage()
+    }, [])
+
+    async function getFromStorage() {
+        const resultLastName = await AsyncStorage.getItem("lastName");
+        const resultFirstName = await AsyncStorage.getItem("firstName");
+
+        if (resultLastName != null) {
+            setLastName(resultLastName)
+        }
+        if (resultFirstName != null) {
+            setFirstName(resultFirstName)
         }
     }
 
+    async function updateName(updatedFirstName: string, updatedLastName: string) {
+
+        const tokenResult = await AsyncStorage.getItem("token");
+        const url = "http://192.168.1.158:5000/users/update";
+        const body = { token: tokenResult, firstName: updatedFirstName, lastName: updatedLastName};
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            });
+
+            const result = await response.json();
+            await AsyncStorage.setItem("firstName", updatedFirstName);
+            await AsyncStorage.setItem("lastName", updatedLastName);
+
+            if (result.error) {
+                throw new TypeError('Failed');
+            }
+
+        } catch (error) {
+            console.log("error", error);
+
+        }
+
+        getFromStorage()
+
+    }
 
     return (
         <SafeAreaView style={styles.container}>
-            <FontAwesome name="user-circle" size={122} color="Black" />
-            <TextInput
-                className="w-2/3 px-2 py-1 text-base text-center text-white rounded-2xl bg-secondary"
-                onChangeText={(text) => {setChangableFirstName(text),  updateName('firstName', firstName, changableFirstName)}}
-                value={changableFirstName}
-                autoCapitalize={"words"} />
-            <TextInput
-                className="w-2/3 px-2 py-1 text-base text-center text-white rounded-2xl bg-secondary"
-                onChangeText={(text) => {setChangableLastName(text), updateName('lastName', lastName, changableLastName)}}
-                value={changableLastName}
-                autoCapitalize={"words"} />
+            {/* User Icon Holder */}
+            <View style={styles.profileIcon}>
+                <UserIcon containerSize={122} colorBorder={ThemeColors["primary/.75"]} />
+                <Text style={styles.profileIconText}>{firstName} {lastName}</Text>
+            </View>
 
-
-            <Pressable onPress={() => { signOut() }} className="p-4 mt-20 rounded-xl bg-primary">
+            {/* Action Buttons */}
+            <Pressable onPress={() => { setModalVisible(true) }} style={styles.updateButton}>
                 <View>
-                    <Text className="text-3xl text-white">Logout</Text>
+                    <Text>Update Name</Text>
                 </View>
             </Pressable>
+            <LogoutButton/>
 
+            <ProfileModal isVisible={modalVisible} firstNamePassed={firstName} lastNamePassed={lastName} close={() => { setModalVisible(false) }} updateVisibleName={(updatedFirstName, updatedLastName) => { updateName(updatedFirstName, updatedLastName) }} />
         </SafeAreaView>
     )
 }
@@ -84,4 +94,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 15,
     },
+    profileIcon:{
+        alignItems: 'center',
+        borderColor: ThemeColors["primary"],
+        borderWidth: 8,
+        borderRadius: 999,
+        padding: 28,
+        aspectRatio: 1/1,
+        backgroundColor: ThemeColors["primary/.75"],      
+    },
+    profileIconText:{
+        padding: 12,
+        fontSize: 18,
+        lineHeight: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: 'white',
+    },
+    updateButton:{
+        padding: 4,
+        borderColor: ThemeColors['primary'],
+        borderWidth: 4,
+        borderRadius: 999,
+    }
 });

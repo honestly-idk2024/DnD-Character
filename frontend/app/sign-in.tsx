@@ -11,6 +11,7 @@ import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useSession } from "../components/auth";
+import { ThemeColors } from "@/constants/Colors";
 
 export default function HomeScreen() {
   //Auth Handle
@@ -89,7 +90,6 @@ export default function HomeScreen() {
     }
   };
 
-
   async function setUserInfo() {
     const tokenResult = await AsyncStorage.getItem("token");
     const url = "http://192.168.1.158:5000/users/info";
@@ -118,7 +118,6 @@ export default function HomeScreen() {
     }
   }
 
-
   const goToLogin = () => {
     setLoginHeader("Login");
     setIsLoggingIn(true);
@@ -128,14 +127,10 @@ export default function HomeScreen() {
     setIsLoggingIn(false);
   };
 
-  const testSign = () => {
-    signIn();
-    router.replace("/");
-  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginContainer}>
-        <Text className="text-6xl text-white">{loginHeader}</Text>
+        <Text style={styles.headerText}>{loginHeader}</Text>
 
         {!isLoggingIn && (
           <View style={styles.name}>
@@ -173,36 +168,36 @@ export default function HomeScreen() {
           placeholder="Enter Your Password"
         />
 
-        <Pressable onPress={loginUserHandle} className="px-12 py-2 m-3 bg-white rounded-md"
+        <Pressable onPress={loginUserHandle} style={styles.confirmButton}
         >
           <View>
-            <Text className="text-xl text-black ">Confirm</Text>
+            <Text style={styles.cofirmButtonText}>Confirm</Text>
           </View>
         </Pressable>
 
         {!message && (<Text>{message}</Text>)}
 
         {!isLoggingIn && (
-          <View className="flex-row items-center gap-2 ">
-            <Text className="text-white">Already have an account?</Text>
+          <View style={styles.changeViewContainer}>
+            <Text style={styles.changeViewText}>Already have an account?</Text>
             <Pressable
               onPress={goToLogin}
             >
               <View>
-                <Text className="text-base font-bold text-white">Login</Text>
+                <Text style={styles.changeViewClickableText}>Login</Text>
               </View>
             </Pressable>
           </View>
         )}
         {isLoggingIn && (
-          <View className="flex-row items-center gap-2 ">
-            <Text className="text-white">Don't have an account?</Text>
+          <View style={styles.changeViewContainer}>
+            <Text style={styles.changeViewText}>Don't have an account?</Text>
             <Pressable
               onPress={goToSignUp}
 
             >
               <View>
-                <Text className="text-base font-bold text-white">Sign Up</Text>
+                <Text style={styles.changeViewClickableText}>Sign Up</Text>
               </View>
             </Pressable>
           </View>
@@ -219,11 +214,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 8,
   },
+  headerText:{
+    fontSize: 60,
+    color: 'white',
+  },
   loginContainer: {
     gap: 10,
     padding: 25,
     margin: "5%",
-    backgroundColor: "#1e6091",
+    backgroundColor: ThemeColors['primary'],
     alignItems: "center",
     borderRadius: 16,
   },
@@ -235,11 +234,35 @@ const styles = StyleSheet.create({
   inputs: {
     height: 40,
     backgroundColor: "white",
-    borderColor: "#1e6091",
-    borderWidth: 2,
     borderRadius: 16,
     textAlign: "center",
     width: "70%",
   },
+  confirmButton: {
+    paddingHorizontal: 48,
+    paddingVertical: 8,
+    margin: 12,
+    backgroundColor: 'white',
+    borderRadius: 6
+  },
+  cofirmButtonText:{
+    fontSize: 20,
+    lineHeight: 28,
+    color: 'black'
+  },
+  changeViewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2
+  },
+  changeViewText: {
+    color: 'white'
+  },
+  changeViewClickableText: {
+    fontSize:16,
+    lineHeight: 24,
+    fontWeight: 'bold',
+    color: 'white'
+  }
 
 });
