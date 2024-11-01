@@ -28,7 +28,8 @@ export default function HomeScreen() {
 
   //Dynamic Text Variables
   const [message, setMessage] = useState("");
-  const [loginHeader, setLoginHeader] = useState("Adventures Await!");
+  const [header, setHeader] = useState("Adventures Await!");
+  const [loginHeader, setLoginHeader] = useState("Login");
 
   //Will redirect user if session becomes true
   useEffect(() => {
@@ -119,18 +120,27 @@ export default function HomeScreen() {
   }
 
   const goToLogin = () => {
-    setLoginHeader("Adventures Await!");
+    setHeader("Adventures Await!")
+    setLoginHeader("Login");
     setIsLoggingIn(true);
   };
   const goToSignUp = () => {
-    setLoginHeader("Adventurers Wanted!");
+    setHeader("Adventurers Wanted!")
+    setLoginHeader("Sign Up");
     setIsLoggingIn(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
+
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>{header}</Text>
+      </View>
+        
+      
+
       <View style={styles.loginContainer}>
-        <Text style={styles.headerText}>{loginHeader}</Text>
+        <Text style={styles.loginHeaderText}>{loginHeader}</Text>
 
         {!isLoggingIn && (
           <View style={styles.name}>
@@ -215,14 +225,28 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 8,
   },
-  headerText:{
+  headerText: {
     fontSize: 32,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  loginHeaderText:{
+    fontSize: 32,
+    fontWeight: 'bold',
     color: 'white',
+  },
+  headerContainer: {
+    padding: 25,
+    margin: "5%",
+    marginBottom: 5,
+    alignItems: "center",
+    borderRadius: 16,
   },
   loginContainer: {
     gap: 10,
     padding: 25,
     margin: "5%",
+    marginTop: 5,
     backgroundColor: ThemeColors['primary'],
     alignItems: "center",
     borderRadius: 16,
