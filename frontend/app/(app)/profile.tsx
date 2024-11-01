@@ -76,7 +76,7 @@ export default function Profile() {
             {/* Action Buttons */}
             <Pressable onPress={() => { setModalVisible(true) }} style={styles.updateButton}>
                 <View>
-                    <Text>Update Name</Text>
+                    <Text style={styles.buttonText}>Update Name</Text>
                 </View>
             </Pressable>
             <LogoutButton/>
@@ -104,17 +104,22 @@ const styles = StyleSheet.create({
         backgroundColor: ThemeColors["primary/.75"],      
     },
     profileIconText:{
-        padding: 12,
+        padding: 5,
         fontSize: 18,
         lineHeight: 28,
         fontWeight: 'bold',
         textAlign: 'center',
         color: 'white',
     },
-    updateButton:{
-        padding: 4,
-        borderColor: ThemeColors['primary'],
+    updateButton: {
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        backgroundColor: ThemeColors['primary'],
         borderWidth: 4,
         borderRadius: 999,
-    }
+        borderColor: ThemeColors['primary'],
+    },
+    buttonText: {
+        color: 'white',
+    },
 });
