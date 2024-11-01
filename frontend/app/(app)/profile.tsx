@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         backgroundColor: ThemeColors["primary/.75"],      
     },
     profileIconText:{
-        padding: 5,
+        padding: 15,
         fontSize: 18,
         lineHeight: 28,
         fontWeight: 'bold',
