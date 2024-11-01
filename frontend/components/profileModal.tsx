@@ -30,7 +30,7 @@ export default function ProfileModal(props: propValue) {
                     <Text style={styles.headerText}>Update Name</Text>
                     <View style={styles.inputContainer}>
                         <TextInput
-                            style={styles.inputFields}
+                            style={styles.input}
                             onChangeText={(text) => setFirstName(text)}
                             value={firstName}
                             autoCapitalize={"words"}
@@ -38,7 +38,7 @@ export default function ProfileModal(props: propValue) {
                         />
 
                         <TextInput
-                            style={styles.inputFields}
+                            style={styles.input}
                             onChangeText={(text) => setLastName(text)}
                             value={lastName}
                             autoCapitalize={"words"}
@@ -46,15 +46,15 @@ export default function ProfileModal(props: propValue) {
 
                         />
                     </View>
-                    <View style={styles.buttonCotainer}>
+                    <View style={styles.buttonContainer}>
                         <Pressable onPress={() => { props.close() }} style={styles.cancelButton}>
                             <View>
-                                <Text>Cancel</Text>
+                                <Text style={styles.buttonText}>Cancel</Text>
                             </View>
                         </Pressable>
                         <Pressable onPress={() => { props.updateVisibleName(firstName, lastName), props.close() }} style={styles.confirmButton}>
                             <View>
-                                <Text className='text-white '>Confirm</Text>
+                                <Text style={styles.buttonText}>Confirm</Text>
                             </View>
                         </Pressable>
                     </View>
@@ -80,8 +80,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 16,
     },
-    headerText:
-    {
+    headerText: {
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 24,
@@ -96,30 +95,37 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         backgroundColor: ThemeColors['primary/.75']
     },
-    inputFields: {
-      width:  '75%',
-      textAlign: 'center',
-      backgroundColor: 'white',
-      borderRadius: 999, 
+    input: {
+        height: 40,
+        backgroundColor: "white",
+        borderRadius: 16,
+        textAlign: "center",
+        width: "70%",
     },
-    buttonCotainer: {
+    buttonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    cancelButton:{
+    cancelButton: {
         paddingHorizontal: 8,
         paddingVertical: 4,
-        backgroundColor: 'white',
+        backgroundColor: ThemeColors['primary'],
         borderWidth: 4,
         borderRadius: 999,
         borderColor: ThemeColors['primary'],
         left: 8
     },
-    confirmButton:{
-        padding: 8,
-        borderRadius: 999,
+    confirmButton: {
+        paddingHorizontal: 8,
+        paddingVertical: 4,
         backgroundColor: ThemeColors['primary'],
+        borderWidth: 4,
+        borderRadius: 999,
+        borderColor: ThemeColors['primary'],
         right: 8
-    }
+    },
+    buttonText: {
+        color: 'white',
+    },
 })
