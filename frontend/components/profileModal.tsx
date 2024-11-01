@@ -46,7 +46,7 @@ export default function ProfileModal(props: propValue) {
 
                         />
                     </View>
-                    <View style={styles.buttonCotainer}>
+                    <View style={styles.buttonContainer}>
                         <Pressable onPress={() => { props.close() }} style={styles.cancelButton}>
                             <View>
                                 <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderRadius: 999, 
     },
-    buttonCotainer: {
+    buttonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
