@@ -28,6 +28,7 @@ export default function HomeScreen() {
 
   //Dynamic Text Variables
   const [message, setMessage] = useState("");
+  const [header, setHeader] = useState("Adventures Await!");
   const [loginHeader, setLoginHeader] = useState("Login");
 
   //Will redirect user if session becomes true
@@ -56,8 +57,8 @@ export default function HomeScreen() {
     }
 
     const url = isLoggingIn
-      ? "http://192.168.1.158:5000/users/login"
-      : "http://192.168.1.158:5000/users/register"; //will need to change ip to the ip of the device
+      ? "http://10.104.2.245:5000/users/login"
+      : "http://10.104.2.245:5000/users/register"; //will need to change ip to the ip of the device
     const body = isLoggingIn
       ? { username: email, password }
       : { username: email, password, firstName, lastName };
@@ -92,7 +93,7 @@ export default function HomeScreen() {
 
   async function setUserInfo() {
     const tokenResult = await AsyncStorage.getItem("token");
-    const url = "http://192.168.1.158:5000/users/info";
+    const url = "http://10.104.2.245:5000/users/info";
     const body = { token: tokenResult };
 
     try {
@@ -119,23 +120,32 @@ export default function HomeScreen() {
   }
 
   const goToLogin = () => {
+    setHeader("Adventures Await!")
     setLoginHeader("Login");
     setIsLoggingIn(true);
   };
   const goToSignUp = () => {
+    setHeader("Adventurers Wanted!")
     setLoginHeader("Sign Up");
     setIsLoggingIn(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
+
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>{header}</Text>
+      </View>
+        
+      
+
       <View style={styles.loginContainer}>
-        <Text style={styles.headerText}>{loginHeader}</Text>
+        <Text style={styles.loginHeaderText}>{loginHeader}</Text>
 
         {!isLoggingIn && (
           <View style={styles.name}>
             <TextInput
-              style={styles.inputs}
+              style={styles.input}
               onChangeText={(text) => setFirstName(text)}
               value={firstName}
               autoCapitalize={"words"}
@@ -143,7 +153,7 @@ export default function HomeScreen() {
             />
 
             <TextInput
-              style={styles.inputs}
+              style={styles.input}
               onChangeText={(text) => setLastName(text)}
               value={lastName}
               autoCapitalize={"words"}
@@ -153,7 +163,7 @@ export default function HomeScreen() {
         )}
 
         <TextInput
-          style={styles.inputs}
+          style={styles.input}
           onChangeText={(text) => setEmail(text)}
           value={email}
           autoCapitalize={"words"}
@@ -161,7 +171,7 @@ export default function HomeScreen() {
         />
 
         <TextInput
-          style={styles.inputs}
+          style={styles.input}
           onChangeText={(text) => setPassword(text)}
           value={password}
           autoCapitalize={"words"}
@@ -171,7 +181,7 @@ export default function HomeScreen() {
         <Pressable onPress={loginUserHandle} style={styles.confirmButton}
         >
           <View>
-            <Text style={styles.cofirmButtonText}>Confirm</Text>
+            <Text style={styles.buttonText}>Confirm</Text>
           </View>
         </Pressable>
 
@@ -208,20 +218,35 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     justifyContent: "center",
     backgroundColor: "white",
     padding: 8,
   },
-  headerText:{
-    fontSize: 60,
+  headerText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  loginHeaderText:{
+    fontSize: 32,
+    fontWeight: 'bold',
     color: 'white',
+  },
+  headerContainer: {
+    padding: 25,
+    margin: "5%",
+    marginBottom: 5,
+    alignItems: "center",
+    borderRadius: 16,
   },
   loginContainer: {
     gap: 10,
     padding: 25,
     margin: "5%",
+    marginTop: 5,
     backgroundColor: ThemeColors['primary'],
     alignItems: "center",
     borderRadius: 16,
@@ -231,7 +256,7 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: "center",
   },
-  inputs: {
+  input: {
     height: 40,
     backgroundColor: "white",
     borderRadius: 16,
@@ -245,7 +270,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 6
   },
-  cofirmButtonText:{
+  buttonText: {
     fontSize: 20,
     lineHeight: 28,
     color: 'black'
