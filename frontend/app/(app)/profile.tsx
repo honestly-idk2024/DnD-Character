@@ -34,9 +34,9 @@ export default function Profile() {
     }
 
     async function updateName(updatedFirstName: string, updatedLastName: string) {
-
+        const envIP = process.env.EXPO_PUBLIC_IP;
         const tokenResult = await AsyncStorage.getItem("token");
-        const url = "http://10.104.2.245:5000/users/update";
+        const url = "http://"+envIP+":5000/users/update";
         const body = { token: tokenResult, firstName: updatedFirstName, lastName: updatedLastName};
 
         try {

@@ -48,7 +48,8 @@ function getSession() {
         router.replace("../sign-in");
         setSession(false);
       } else {
-        const url = "http://192.168.1.158:5000/users/verify";
+        const envIP = process.env.EXPO_PUBLIC_IP;
+        const url = "http://"+envIP+":5000/users/verify";
         const body = { token: tokenResult };
 
         try {
