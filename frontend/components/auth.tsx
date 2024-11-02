@@ -85,6 +85,8 @@ function getSession() {
 
 async function removeToken() {
   await AsyncStorage.removeItem("token");
+  await AsyncStorage.removeItem("firstName");
+  await AsyncStorage.removeItem("lastName");
 }
 //controlls the auth logic
 export function SessionProvider({ children }: PropsWithChildren) {
