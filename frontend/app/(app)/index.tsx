@@ -8,6 +8,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 //Internal Imports
 import LogoutButton from "@/components/logoutButton";
 import { ThemeColors } from "@/constants/Colors";
+import { Link } from "expo-router";
 
 
 export default function WelcomeScreen() {
@@ -112,7 +113,11 @@ export default function WelcomeScreen() {
           )}
         />
 
-
+        <Link href="/CharacterDesign" asChild>
+        <Pressable>
+          <Text>Temp</Text>
+        </Pressable>
+        </Link>
         <LogoutButton />
       </View>
     </ScrollView>
