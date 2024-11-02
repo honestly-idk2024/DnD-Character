@@ -71,7 +71,7 @@ function getSession() {
         } catch (error) {
           
           console.log("error", error);
-          await AsyncStorage.removeItem("token");
+          removeToken()
 
           router.replace("../sign-in");
           setSession(false);
