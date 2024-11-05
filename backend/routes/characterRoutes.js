@@ -11,17 +11,16 @@ router.get("/", (req, res) => {
     res.send("Route is running.");
 });
 // Registration route
-router.post("/register", async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
-        const { id, characterName, level } = req.body;
+        const { token, characterName, level } = req.body;
         // Check if the user already exists
-        const existingUser = await Character.findOne({ characterName });
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
-        }
+        var decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        userID =decoded.id;
         // Create new user
         const newCharacter = new Character({
-            id,
+            userId,
             characterName,
             level
         });
