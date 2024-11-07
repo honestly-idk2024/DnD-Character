@@ -11,8 +11,14 @@ alignment: {type: String},
 speed: {type: String},
 // AC 10 + dex mod
 AC: {type: String}, 
+HP: {type: number},
 
+statStr: { type: Number },
+statDex: { type: Number },
+statCon: { type: Number },
+statInt: { type: Number },
 statWis: { type: Number },
+statChar: { type: Number },
 
 appearance: {type: String},
 personalityTraits: {type: String},
@@ -20,7 +26,6 @@ ideals: {type: String},
 bonds: {type: String},
 flaws: {type: String},
 background: {type: String}, 
-proficiencies: [{type: String}],
 });
 const User = mongoose.model("character", characterSchema);
 module.exports = User;
