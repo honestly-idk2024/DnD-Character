@@ -1,6 +1,6 @@
 import SelectDropdown from "react-native-select-dropdown";
 import { Text, StyleSheet, View, Pressable } from "react-native";
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { ThemeColors } from "@/constants/Colors";
@@ -8,6 +8,7 @@ import { ThemeColors } from "@/constants/Colors";
 
 type propValue = {
   dropDownList: { title: string; }[];
+  setMyVar: Dispatch<SetStateAction<string>>;
   title: String;
 }
 
@@ -28,6 +29,7 @@ export default function DropDown(props: propValue) {
       data={props.dropDownList}
       onSelect={(selectedItem, index) => {
         console.log(selectedItem, index);
+        props.setMyVar(selectedItem.title)
       }}
       renderButton={(selectedItem, isOpened) => {
         return (

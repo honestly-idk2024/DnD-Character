@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Modal, View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { ThemeColors } from '@/constants/Colors';
 import DropDown from './dropDown';
@@ -11,9 +12,12 @@ type propValue = {
 }
 
 export default function AddCharacterModal(props: propValue) {
-    const [characterName, setCharacterName] = useState('')
-    const [race, setRace] = useState('')
+    const envIP = process.env.EXPO_PUBLIC_IP;
+
+    const [characterName, setCharacterName] = useState('');
     const [level, setLevel] = useState('')
+    const [race, setRace] = useState('')
+    const [characterClass, setCharacterClass] = useState('')
 
     const races = [
         { title: "Dragonborn", },
@@ -31,6 +35,20 @@ export default function AddCharacterModal(props: propValue) {
         { title: "Minotaur", },
         { title: "Catfolk", },
     ];
+    const classes=[
+        { title: "Barbarian", },
+        { title: "Bard", },
+        { title: "Cleric", },
+        { title: "Druid", },
+        { title: "Fighter", },
+        { title: "Monk", },
+        { title: "Paladin", },
+        { title: "Ranger", },
+        { title: "Rogue", },
+        { title: "Sorcerer", },
+        { title: "Sorcerer", },
+        { title: "Wizard", },
+    ]
     const levels = [
         { title: "1", },
         { title: "2", },
@@ -54,13 +72,40 @@ export default function AddCharacterModal(props: propValue) {
         { title: "20", },
     ];
 
+    async function createCharacter() {
+        const tokenResult = await AsyncStorage.getItem("token");
+        const url = "http://"+envIP+":5000/character/create";
+        const body = { token: tokenResult, characterName: characterName, level: level, race: race, characterClass: characterClass };
+    
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
+    
+          const result = await response.json();
+          console.log(result)
+          if (result.error) {
+            throw new TypeError('Failed');
+          }
+    
+        } catch (error) {
+          console.log("error", error);
+    
+        }
+      }
+    
+
     return (
         <Modal transparent visible={props.isVisible}>
             <View style={styles.modalContainer}>
                 <View style={styles.mainBodyContainer}>
                     <Text style={styles.headerText}>Create Character</Text>
                     <View style={styles.inputContainer}>
-                        <Text className='bg-pink-600'>Character Name</Text>
+                        <Text>Character Name</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) => setCharacterName(text)}
@@ -69,18 +114,20 @@ export default function AddCharacterModal(props: propValue) {
                             placeholder="Enter Name"
                         />
                         <Text>Race</Text>
-                        <DropDown dropDownList={races} title={"Select Race"} />
+                        <DropDown dropDownList={races} title={"Select Race"} setMyVar={setRace} />
+                        <Text>Class</Text>
+                        <DropDown dropDownList={classes} title={"Select Class"} setMyVar={setCharacterClass}/>
                         <Text>Level</Text>
-                        <DropDown dropDownList={levels} title={"Select Level"} />
+                        <DropDown dropDownList={levels} title={"Select Level"} setMyVar={setLevel}/>
 
                     </View>
                     <View style={styles.buttonContainer}>
-                        <Pressable onPress={() => { props.close(), setCharacterName('') }} style={styles.cancelButton}>
+                        <Pressable onPress={() => { props.close(), setCharacterName(''), console.log(level) }} style={styles.cancelButton}>
                             <View>
                                 <Text style={styles.buttonText}>Cancel</Text>
                             </View>
                         </Pressable>
-                        <Pressable onPress={() => { props.close(), setCharacterName('') }} style={styles.confirmButton}>
+                        <Pressable onPress={() => { createCharacter(), props.close(), setCharacterName('')  }} style={styles.confirmButton}>
                             <View>
                                 <Text style={styles.buttonText}>Confirm</Text>
                             </View>
@@ -118,10 +165,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8,
-        padding: 16,
+        paddingTop: 8,
+        paddingBottom: 12,
         margin: 12,
         borderRadius: 12,
-
     },
     input: {
         width: 200,
