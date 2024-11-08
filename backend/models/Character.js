@@ -11,7 +11,7 @@ alignment: {type: String},
 speed: {type: String},
 // AC 10 + dex mod
 AC: {type: String}, 
-HP: {type: number},
+HP: {type: Number},
 
 statStr: { type: Number },
 statDex: { type: Number },

@@ -9,14 +9,18 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import LogoutButton from "@/components/logoutButton";
 import { ThemeColors } from "@/constants/Colors";
 import { Link } from "expo-router";
+import DropDown from "@/components/dropDown";
+import AddCharacterModal from "@/components/addCharacterModal";
 
 
 export default function WelcomeScreen() {
+  const [modalVisible, setModalVisible] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [displayMessage, setDisplayMessage] = useState('');
   const [tempCounter, setTempCounter] = useState(0);
 
+ 
 
   const [listCount, setListCount] = useState(0);
   const [characterList, setCharacterList] = useState<any>([]);
@@ -77,7 +81,7 @@ export default function WelcomeScreen() {
     <ScrollView>
 
       <View style={styles.subHeader}>
-        <Pressable onPress={addCharacter}>
+        <Pressable onPress={() => {setModalVisible(true)}}>
           <View style={styles.subHeaderButton}>
             <Text >Add Character</Text>
           </View>
@@ -118,7 +122,10 @@ export default function WelcomeScreen() {
           <Text>Temp</Text>
         </Pressable>
         </Link>
-        <LogoutButton />
+
+
+        
+        <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }}/>
       </View>
     </ScrollView>
   );
