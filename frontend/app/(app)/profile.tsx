@@ -7,14 +7,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LogoutButton from "@/components/logoutButton";
 import UserIcon from '../../components/userIcon'
 import ProfileModal from "@/components/profileModal";
+import PasswordModal from "@/components/passwordModal";
 import { ThemeColors } from "@/constants/Colors";
 
 
 export default function Profile() {
     const [modalVisible, setModalVisible] = useState(false);
+    const [nameModalVisible, setNameModalVisible] = useState(false);
+    const [passwordModalVisible, setPasswordModalVisible] = useState(false);
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
+    const [password, setPassword] = useState("");
 
     //At first render
     useEffect(() => {
@@ -36,7 +40,7 @@ export default function Profile() {
     async function updateName(updatedFirstName: string, updatedLastName: string) {
 
         const tokenResult = await AsyncStorage.getItem("token");
-        const url = "http://10.104.2.245:5000/users/update";
+        const url = "http://10.104.4.132:5000/users/update";
         const body = { token: tokenResult, firstName: updatedFirstName, lastName: updatedLastName};
 
         try {
@@ -65,6 +69,37 @@ export default function Profile() {
 
     }
 
+    async function updatePassword(updatedPassword: string) {
+
+        const tokenResult = await AsyncStorage.getItem("token");
+        const url = "http://10.104.4.132:5000/users/update";
+        const body = { token: tokenResult, password: updatedPassword};
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            });
+
+            const result = await response.json();
+            await AsyncStorage.setItem("password", updatedPassword);
+
+            if (result.error) {
+                throw new TypeError('Failed');
+            }
+
+        } catch (error) {
+            console.log("error", error);
+
+        }
+
+        getFromStorage()
+
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {/* User Icon Holder */}
@@ -79,9 +114,17 @@ export default function Profile() {
                     <Text style={styles.buttonText}>Update Name</Text>
                 </View>
             </Pressable>
+
+            <Pressable onPress={() => { setPasswordModalVisible(true) }} style={styles.updateButton}>
+                <View>
+                    <Text style={styles.buttonText}>Change Password</Text>
+                </View>
+            </Pressable>
             <LogoutButton/>
 
             <ProfileModal isVisible={modalVisible} firstNamePassed={firstName} lastNamePassed={lastName} close={() => { setModalVisible(false) }} updateVisibleName={(updatedFirstName, updatedLastName) => { updateName(updatedFirstName, updatedLastName) }} />
+            <PasswordModal isVisible={passwordModalVisible} passwordPassed={password} close={() => { setPasswordModalVisible(false) }} updatePassword={(updatedPassword) => { updatePassword(updatedPassword) }} />
+
         </SafeAreaView>
     )
 }

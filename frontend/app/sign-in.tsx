@@ -57,8 +57,8 @@ export default function HomeScreen() {
     }
 
     const url = isLoggingIn
-      ? "http://10.104.2.245:5000/users/login"
-      : "http://10.104.2.245:5000/users/register"; //will need to change ip to the ip of the device
+      ? "http://10.104.4.132:5000/users/login"
+      : "http://10.104.4.132:5000/users/register"; //will need to change ip to the ip of the device
     const body = isLoggingIn
       ? { username: email, password }
       : { username: email, password, firstName, lastName };
@@ -93,7 +93,7 @@ export default function HomeScreen() {
 
   async function setUserInfo() {
     const tokenResult = await AsyncStorage.getItem("token");
-    const url = "http://10.104.2.245:5000/users/info";
+    const url = "http://10.104.4.132:5000/users/info";
     const body = { token: tokenResult };
 
     try {
@@ -176,6 +176,7 @@ export default function HomeScreen() {
           value={password}
           autoCapitalize={"words"}
           placeholder="Enter Your Password"
+          secureTextEntry={true}
         />
 
         <Pressable onPress={loginUserHandle} style={styles.confirmButton}

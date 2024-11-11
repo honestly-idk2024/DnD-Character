@@ -6,7 +6,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 //Internal Imports
-import LogoutButton from "@/components/logoutButton";
 import { ThemeColors } from "@/constants/Colors";
 
 
@@ -112,8 +111,6 @@ export default function WelcomeScreen() {
           )}
         />
 
-
-        <LogoutButton />
       </View>
     </ScrollView>
   );
