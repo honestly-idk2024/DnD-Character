@@ -167,16 +167,20 @@ export default function HomeScreen() {
           onChangeText={(text) => setEmail(text)}
           value={email}
           autoCapitalize={"words"}
-          placeholder="Enter Your Email"
+          placeholder="Email"
         />
 
         <TextInput
           style={styles.input}
           onChangeText={(text) => setPassword(text)}
           value={password}
+<<<<<<< Updated upstream
           autoCapitalize={"words"}
           placeholder="Enter Your Password"
           secureTextEntry={true}
+=======
+          placeholder="Password"
+>>>>>>> Stashed changes
         />
 
         <Pressable onPress={loginUserHandle} style={styles.confirmButton}
