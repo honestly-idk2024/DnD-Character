@@ -30,13 +30,8 @@ export default function PasswordModal(props: propValue) {
                             style={styles.input}
                             onChangeText={(text) => setPassword(text)}
                             value={password}
-<<<<<<< Updated upstream
-                            autoCapitalize={"words"}
-                            secureTextEntry={true}
-=======
                             secureTextEntry={true}
                             placeholder='New Password'
->>>>>>> Stashed changes
 
                         />
 
