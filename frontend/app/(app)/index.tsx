@@ -14,6 +14,7 @@ import AddCharacterModal from "@/components/addCharacterModal";
 
 
 export default function WelcomeScreen() {
+  const envIP = process.env.EXPO_PUBLIC_IP;
   const [modalVisible, setModalVisible] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -77,6 +78,38 @@ export default function WelcomeScreen() {
     setListCount(listCount - 1)
   }
 
+
+
+    async function createCharacter() {
+      const tokenResult = await AsyncStorage.getItem("token");
+      const url = "http://"+envIP+":5000/character/characters";
+      const body = { token: tokenResult };
+  
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+  
+        const result = await response.json();
+        console.log(result)
+        if (result.error) {
+          throw new TypeError('Failed');
+        }
+  
+      } catch (error) {
+        console.log("error", error);
+  
+      }
+    }
+  
+
+
+
+
   return (
     <ScrollView>
 
@@ -117,11 +150,11 @@ export default function WelcomeScreen() {
           )}
         />
 
-        <Link href="/CharacterDesign" asChild>
-        <Pressable>
+        {/* <Link href="/CharacterDesign" asChild> */}
+        <Pressable onPress={createCharacter}>
           <Text>Temp</Text>
         </Pressable>
-        </Link>
+        {/* </Link> */}
 
 
         
