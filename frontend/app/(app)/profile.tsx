@@ -12,10 +12,6 @@ import { ThemeColors } from "@/constants/Colors";
 
 
 export default function Profile() {
-<<<<<<< Updated upstream
-    const [modalVisible, setModalVisible] = useState(false);
-=======
->>>>>>> Stashed changes
     const [nameModalVisible, setNameModalVisible] = useState(false);
     const [passwordModalVisible, setPasswordModalVisible] = useState(false);
 
@@ -75,11 +71,7 @@ export default function Profile() {
     async function updatePassword(updatedPassword: string) {
 
         const tokenResult = await AsyncStorage.getItem("token");
-<<<<<<< Updated upstream
-        const url = "http://10.104.4.132:5000/users/update";
-=======
         const url = "http://10.104.4.132:5000/users/updatePassword";
->>>>>>> Stashed changes
         const body = { token: tokenResult, password: updatedPassword};
 
         try {
@@ -129,11 +121,7 @@ export default function Profile() {
             </Pressable>
             <LogoutButton/>
 
-<<<<<<< Updated upstream
-            <ProfileModal isVisible={modalVisible} firstNamePassed={firstName} lastNamePassed={lastName} close={() => { setModalVisible(false) }} updateVisibleName={(updatedFirstName, updatedLastName) => { updateName(updatedFirstName, updatedLastName) }} />
-=======
             <ProfileModal isVisible={nameModalVisible} firstNamePassed={firstName} lastNamePassed={lastName} close={() => { setNameModalVisible(false) }} updateVisibleName={(updatedFirstName, updatedLastName) => { updateName(updatedFirstName, updatedLastName) }} />
->>>>>>> Stashed changes
             <PasswordModal isVisible={passwordModalVisible} passwordPassed={password} close={() => { setPasswordModalVisible(false) }} updatePassword={(updatedPassword) => { updatePassword(updatedPassword) }} />
 
         </SafeAreaView>
