@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Modal, View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -8,6 +8,8 @@ import DropDown from './dropDown';
 
 type propValue = {
     isVisible: boolean;
+    setCharacterList: Dispatch<SetStateAction<string>>;
+    updateCharacterList: (characterObject: {_id: string, characterName: string}) => void;
     close: () => void;
 }
 
@@ -87,7 +89,9 @@ export default function AddCharacterModal(props: propValue) {
           });
     
           const result = await response.json();
-          console.log(result)
+
+          props.updateCharacterList(result);
+          
           if (result.error) {
             throw new TypeError('Failed');
           }
@@ -122,7 +126,7 @@ export default function AddCharacterModal(props: propValue) {
 
                     </View>
                     <View style={styles.buttonContainer}>
-                        <Pressable onPress={() => { props.close(), setCharacterName(''), console.log(level) }} style={styles.cancelButton}>
+                        <Pressable onPress={() => { props.close(), setCharacterName('') }} style={styles.cancelButton}>
                             <View>
                                 <Text style={styles.buttonText}>Cancel</Text>
                             </View>

@@ -1,5 +1,5 @@
 //External Imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Text, StyleSheet, Pressable, View, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
@@ -15,72 +15,14 @@ import AddCharacterModal from "@/components/addCharacterModal";
 
 export default function WelcomeScreen() {
   const envIP = process.env.EXPO_PUBLIC_IP;
+
   const [modalVisible, setModalVisible] = useState(false)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [displayMessage, setDisplayMessage] = useState('');
-  const [tempCounter, setTempCounter] = useState(0);
-
- 
-
   const [listCount, setListCount] = useState(0);
   const [characterList, setCharacterList] = useState<any>([]);
 
   //Pull Info from Local Storage
-  useFocusEffect(() => {
-    async function getFromStorage() {
-      try {
-        const result = await AsyncStorage.getItem("loginType");
-        const resultLastName = await AsyncStorage.getItem("lastName");
-        const resultFirstName = await AsyncStorage.getItem("firstName");
-
-        if (resultLastName != null) {
-          setLastName(resultLastName)
-        }
-        if (resultFirstName != null) {
-          setFirstName(resultFirstName)
-        }
-        if (result != null) {
-          if (result == 'login') {
-            setDisplayMessage('Welcome back,')
-
-          }
-          else {
-            setDisplayMessage('Welcome,')
-          }
-        }
-        else {
-          throw new TypeError('Type is Null');
-        }
-      }
-      catch (error) {
-        console.log('Error')
-      }
-    }
-    getFromStorage()
-
-  });
-
-  function addCharacter() {
-    const newObject = { id: tempCounter }
-    setTempCounter(tempCounter + 1)
-    setCharacterList([...characterList, newObject])
-    setListCount(listCount + 1)
-
-  }
-
-  function removeCharacter(position: number) {
-
-    let list = characterList
-    list.splice(position, 1)
-
-    setCharacterList(list)
-    setListCount(listCount - 1)
-  }
-
-
-
-    async function createCharacter() {
+  useEffect(() => {
+    async function getCharacterList() {
       const tokenResult = await AsyncStorage.getItem("token");
       const url = "http://"+envIP+":5000/character/characters";
       const body = { token: tokenResult };
@@ -95,7 +37,11 @@ export default function WelcomeScreen() {
         });
   
         const result = await response.json();
-        console.log(result)
+
+        setCharacterList(result);
+        setListCount(result.length)
+
+
         if (result.error) {
           throw new TypeError('Failed');
         }
@@ -105,11 +51,23 @@ export default function WelcomeScreen() {
   
       }
     }
-  
+    getCharacterList()
+  },[]);
 
+  function removeCharacter(position: number) {
 
+    let list = characterList
+    list.splice(position, 1)
 
+    setCharacterList(list)
+    setListCount(listCount - 1)
+  }
 
+  function updateList(characterObject: {_id: string, characterName: string}){
+    setCharacterList([...characterList, characterObject])
+    setListCount(listCount+1)
+    
+  }
   return (
     <ScrollView>
 
@@ -122,11 +80,10 @@ export default function WelcomeScreen() {
       </View>
 
       <View style={styles.listContainer}>
-        <Text style={styles.greetingText}>{displayMessage} {firstName} {lastName}.</Text>
         {listCount == 0 && (
           <View style={styles.addCharacterContainer}>
             <Text style={styles.addCharacterHeader}>You have no characters</Text>
-            <Pressable onPress={addCharacter} style={styles.addCharacterButtonContainer}>
+            <Pressable onPress={() => {setModalVisible(true)}} style={styles.addCharacterButtonContainer}>
               <View >
                 <Text style={styles.addCharacterButtonText}>Add Character</Text>
               </View>
@@ -137,11 +94,11 @@ export default function WelcomeScreen() {
         <FlatList
           data={characterList}
           scrollEnabled={false}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           extraData={listCount}
           renderItem={({ item, index }) => (
             <View style={styles.characterListContainer}>
-              <Text style={styles.characterListText}>Character {item.id}</Text>
+              <Text style={styles.characterListText}>{item.characterName}</Text>
 
               <Pressable onPress={() => { removeCharacter(index) }}>
                 <AntDesign name="delete" size={24} color="white" />
@@ -151,14 +108,14 @@ export default function WelcomeScreen() {
         />
 
         {/* <Link href="/CharacterDesign" asChild> */}
-        <Pressable onPress={createCharacter}>
+        <Pressable onPress={()=>{}}>
           <Text>Temp</Text>
         </Pressable>
         {/* </Link> */}
 
 
         
-        <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }}/>
+        <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => {updateList(characterObject)}}/>
       </View>
     </ScrollView>
   );
@@ -173,14 +130,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     backgroundColor: ThemeColors['primary/.75'],
+    marginBottom: 32,
   },
   listContainer: {
     alignItems: 'center'
-  },
-  greetingText: {
-    padding: 10,
-    fontSize: 24,
-    lineHeight: 32,
   },
   subHeaderButton: {
     backgroundColor: 'white',
@@ -190,7 +143,6 @@ const styles = StyleSheet.create({
   },
   //Add Character Sytles
   addCharacterContainer: {
-
     alignItems: 'center',
     padding: 16,
     borderRadius: 4,

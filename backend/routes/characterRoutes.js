@@ -50,7 +50,7 @@ router.post("/create", async (req, res) => {
         
         console.log(character)
 
-        res.status(200).json(character)
+        res.status(200).json({"_id":character._id, "characterName": character.characterName})
     } catch (error) {
         res.status(500).json({ error: "Failed to register user" });
         console.error("Error:", error);
