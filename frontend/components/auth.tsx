@@ -48,7 +48,8 @@ function getSession() {
         router.replace("../sign-in");
         setSession(false);
       } else {
-        const url = "http://10.104.2.245:5000/users/verify";
+        const envIP = process.env.EXPO_PUBLIC_IP;
+        const url = "http://"+envIP+":5000/users/verify";
         const body = { token: tokenResult };
 
         try {
@@ -70,7 +71,7 @@ function getSession() {
         } catch (error) {
           
           console.log("error", error);
-          await AsyncStorage.removeItem("token");
+          removeToken()
 
           router.replace("../sign-in");
           setSession(false);
@@ -84,6 +85,8 @@ function getSession() {
 
 async function removeToken() {
   await AsyncStorage.removeItem("token");
+  await AsyncStorage.removeItem("firstName");
+  await AsyncStorage.removeItem("lastName");
 }
 //controlls the auth logic
 export function SessionProvider({ children }: PropsWithChildren) {

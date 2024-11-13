@@ -14,6 +14,7 @@ type propValue = {
 export default function PasswordModal(props: propValue) {
     const [password, setPassword] = useState('')
 
+	
     useEffect(() => {
         setPassword(props.passwordPassed)
 
@@ -55,7 +56,6 @@ export default function PasswordModal(props: propValue) {
         </Modal>
     )
 }
-
 
 const styles = StyleSheet.create({
     modalContainer: {

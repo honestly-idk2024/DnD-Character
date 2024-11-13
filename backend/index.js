@@ -9,6 +9,7 @@ app.use(express.json());
 // Cors middleware
 app.use(cors());
 // Connect to MongoDB
+
 mongoose
     .connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
@@ -30,4 +31,6 @@ app.get("/", (req, res) => {
 });
 // Import routes
 const userRoutes = require("./routes/userRoutes");
+const characterRoutes = require("./routes/characterRoutes");
 app.use("/users", userRoutes);
+app.use("/character", characterRoutes);

@@ -58,8 +58,8 @@ export default function HomeScreen() {
     }
 
     const url = isLoggingIn
-      ? "http://+envIP+:5000/users/login"
-      : "http://+envIP+:5000/users/register"; //will need to change ip to the ip of the device
+      ? "http://"+envIP+":5000/users/login"
+      : "http://"+envIP+":5000/users/register"; //will need to change ip to the ip of the device
     const body = isLoggingIn
       ? { username: email, password }
       : { username: email, password, firstName, lastName };
@@ -94,7 +94,7 @@ export default function HomeScreen() {
 
   async function setUserInfo() {
     const tokenResult = await AsyncStorage.getItem("token");
-    const url = "http://+envIP+:5000/users/info";
+    const url = "http://"+envIP+":5000/users/info";
     const body = { token: tokenResult };
 
     try {
@@ -168,20 +168,15 @@ export default function HomeScreen() {
           onChangeText={(text) => setEmail(text)}
           value={email}
           autoCapitalize={"words"}
-          placeholder="Email"
+          placeholder="Enter Your Email"
         />
 
         <TextInput
           style={styles.input}
           onChangeText={(text) => setPassword(text)}
           value={password}
-<<<<<<< Updated upstream
           autoCapitalize={"words"}
           placeholder="Enter Your Password"
-          secureTextEntry={true}
-=======
-          placeholder="Password"
->>>>>>> Stashed changes
         />
 
         <Pressable onPress={loginUserHandle} style={styles.confirmButton}
