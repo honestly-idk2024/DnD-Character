@@ -24,9 +24,9 @@ export default function WelcomeScreen() {
   useEffect(() => {
     async function getCharacterList() {
       const tokenResult = await AsyncStorage.getItem("token");
-      const url = "http://"+envIP+":5000/character/characters";
+      const url = "http://" + envIP + ":5000/character/characters";
       const body = { token: tokenResult };
-  
+
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -35,7 +35,7 @@ export default function WelcomeScreen() {
           },
           body: JSON.stringify(body),
         });
-  
+
         const result = await response.json();
 
         setCharacterList(result);
@@ -45,34 +45,63 @@ export default function WelcomeScreen() {
         if (result.error) {
           throw new TypeError('Failed');
         }
-  
+
       } catch (error) {
         console.log("error", error);
-  
+
       }
     }
     getCharacterList()
-  },[]);
+  }, []);
 
-  function removeCharacter(position: number) {
+  async function removeCharacter(position: number, _id: string) {
+    const tokenResult = await AsyncStorage.getItem("token");
+    const url = "http://" + envIP + ":5000/character/delete";
+    const body = { token: tokenResult, _id: _id };
 
-    let list = characterList
-    list.splice(position, 1)
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
-    setCharacterList(list)
-    setListCount(listCount - 1)
+      const result = await response.json();
+
+      if (result.error) {
+
+        throw new TypeError('Failed');
+      }
+
+      let list = characterList
+      list.splice(position, 1)
+
+      setCharacterList(list)
+      setListCount(listCount - 1)
+
+      if (result.error) {
+        throw new TypeError('Failed');
+      }
+
+    } catch (error) {
+      console.log("error", error);
+
+    }
+
   }
 
-  function updateList(characterObject: {_id: string, characterName: string}){
+  function updateList(characterObject: { _id: string, characterName: string }) {
     setCharacterList([...characterList, characterObject])
-    setListCount(listCount+1)
-    
+    setListCount(listCount + 1)
+
   }
   return (
     <ScrollView>
 
       <View style={styles.subHeader}>
-        <Pressable onPress={() => {setModalVisible(true)}}>
+        <Pressable onPress={() => { setModalVisible(true) }}>
           <View style={styles.subHeaderButton}>
             <Text >Add Character</Text>
           </View>
@@ -83,7 +112,7 @@ export default function WelcomeScreen() {
         {listCount == 0 && (
           <View style={styles.addCharacterContainer}>
             <Text style={styles.addCharacterHeader}>You have no characters</Text>
-            <Pressable onPress={() => {setModalVisible(true)}} style={styles.addCharacterButtonContainer}>
+            <Pressable onPress={() => { setModalVisible(true) }} style={styles.addCharacterButtonContainer}>
               <View >
                 <Text style={styles.addCharacterButtonText}>Add Character</Text>
               </View>
@@ -100,7 +129,7 @@ export default function WelcomeScreen() {
             <View style={styles.characterListContainer}>
               <Text style={styles.characterListText}>{item.characterName}</Text>
 
-              <Pressable onPress={() => { removeCharacter(index) }}>
+              <Pressable onPress={() => { removeCharacter(index, item._id) }}>
                 <AntDesign name="delete" size={24} color="white" />
               </Pressable>
             </View>
@@ -108,14 +137,14 @@ export default function WelcomeScreen() {
         />
 
         {/* <Link href="/CharacterDesign" asChild> */}
-        <Pressable onPress={()=>{}}>
+        <Pressable onPress={() => { }}>
           <Text>Temp</Text>
         </Pressable>
         {/* </Link> */}
 
 
-        
-        <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => {updateList(characterObject)}}/>
+
+        <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => { updateList(characterObject) }} />
       </View>
     </ScrollView>
   );
@@ -178,7 +207,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16
   },
-  
+
 
 
 })

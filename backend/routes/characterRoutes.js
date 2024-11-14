@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Character = require("../models/Character");
 const router = express.Router();
 var Mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
 
 
@@ -48,8 +49,6 @@ router.post("/create", async (req, res) => {
 
         const character = await newCharacter.save();
         
-        console.log(character)
-
         res.status(200).json({"_id":character._id, "characterName": character.characterName})
     } catch (error) {
         res.status(500).json({ error: "Failed to register user" });
@@ -64,6 +63,14 @@ router.post("/delete", async (req, res) => {
         var decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         userID = decoded.id;
+
+        const characterDeleted = await Character.deleteOne({userId: userID, _id: new ObjectId(_id)});
+        console.log(characterDeleted)
+        if(characterDeleted.deletedCount != 1)
+        {
+            throw new TypeError('Issue has occured while deleting');
+        }
+        res.status(200).json({success: 'Successful Deletion' })
     }catch (error) {
         res.status(500).json({ error: "Failed to register user" });
         console.error("Error:", error);
@@ -77,6 +84,8 @@ router.post("/update", async (req, res) => {
         var decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         userID = decoded.id;
+
+
     }catch (error) {
         res.status(500).json({ error: "Failed to register user" });
         console.error("Error:", error);
@@ -91,7 +100,7 @@ router.post("/info", async (req, res) => {
 
         userID = decoded.id;
     }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+        res.status(500).json({ error: "Failed to get character information" });
         console.error("Error:", error);
     }
 });
@@ -104,15 +113,12 @@ router.post("/characters", async (req, res) => {
 
         userID = decoded.id;
 
-        console.log(userID)
         const characters = await Character.find( {userId: userID},{characterName:true} );
-
-        console.log(characters)
 
         //returns _id, and characterName
         res.status(200).json(characters)
     }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+        res.status(500).json({ error: "Failed to get user characters" });
         console.error("Error:", error);
     }
 });
