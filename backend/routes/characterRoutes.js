@@ -21,7 +21,7 @@ router.post("/create", async (req, res) => {
         // Create new user
 
         let external = await externalAPI(race)
-        console.log(external)
+
         const newCharacter = new Character({
             userId: userID,
             characterName: characterName,
@@ -51,48 +51,63 @@ router.post("/create", async (req, res) => {
         });
 
         const character = await newCharacter.save();
-        console.log(character)
-        
-        res.status(200).json({"_id":character._id, "characterName": character.characterName})
+
+
+        res.status(200).json({ "_id": character._id, "characterName": character.characterName })
     } catch (error) {
         res.status(500).json({ error: "Failed to create character" });
         console.error("Error:", error);
     }
 });
 
-async function externalAPI(race)
-{
-    let url = ''
-    switch(race)
-    {
-        case 'Dragonborn':
-            url = 'https://www.dnd5eapi.co/api/races/dragonborn'
-        case 'Dwarf':
-            url = 'https://www.dnd5eapi.co/api/races/dwarf'
-        case 'Elf':
-            url = 'https://www.dnd5eapi.co/api/races/elf'
-        case 'Gnome':
-            url = 'https://www.dnd5eapi.co/api/races/gnome'
-        case 'Half-Elf':
-            url = 'https://www.dnd5eapi.co/api/races/half-elf'
-        case 'Half-Orc':
-            url = 'https://www.dnd5eapi.co/api/races/half-orc'
-        case 'Halfling':
-            url = 'https://www.dnd5eapi.co/api/races/halfling'
-        case 'Human':
-            url = 'https://www.dnd5eapi.co/api/races/human'
-        case 'Tiefling':
-            url = 'https://www.dnd5eapi.co/api/races/tiefling'
+async function externalAPI(race) {
+    try {
+        let url = ''
+        
+        switch (race) {
+            case 'Dragonborn':
+                url = 'https://www.dnd5eapi.co/api/races/dragonborn'
+                break
+            case 'Dwarf':
+                url = 'https://www.dnd5eapi.co/api/races/dwarf'
+                break
+            case 'Elf':
+                url = 'https://www.dnd5eapi.co/api/races/elf'
+                break
+            case 'Gnome':
+                url = 'https://www.dnd5eapi.co/api/races/gnome'
+                break
+            case 'Half-Elf':
+                url = 'https://www.dnd5eapi.co/api/races/half-elf'
+                break
+            case 'Half-Orc':
+                url = 'https://www.dnd5eapi.co/api/races/half-orc'
+                break
+            case 'Halfling':
+                url = 'https://www.dnd5eapi.co/api/races/halfling'
+                break
+            case 'Human':
+                url = 'https://www.dnd5eapi.co/api/races/human'
+                break
+            case 'Tiefling':
+                url = 'https://www.dnd5eapi.co/api/races/tiefling'
+                break
+            default:
+                throw new TypeError('Invalid Race');
+                break
+        }
+        
+
+        const external = await fetch(url)
+        const json = await external.json();
+
+        return { alignment: json.alignment, speed: json.speed }
+    } catch (error) {
+        console.error("Error:", error);
     }
-    
-    const external = await fetch(url)
-    const json = await external.json();
-    
-    return {alignment: json.alignment, speed: json.speed}
-    
 }
 
-router.post("/delete", async (req, res) => {    
+router.post("/delete", async (req, res) => {
     try {
         const { token, _id } = req.body;
         // decodes token
@@ -100,20 +115,19 @@ router.post("/delete", async (req, res) => {
 
         userID = decoded.id;
 
-        const characterDeleted = await Character.deleteOne({userId: userID, _id: new ObjectId(_id)});
+        const characterDeleted = await Character.deleteOne({ userId: userID, _id: new ObjectId(_id) });
         console.log(characterDeleted)
-        if(characterDeleted.deletedCount != 1)
-        {
+        if (characterDeleted.deletedCount != 1) {
             throw new TypeError('Issue has occured while deleting');
         }
-        res.status(200).json({success: 'Successful Deletion' })
-    }catch (error) {
+        res.status(200).json({ success: 'Successful Deletion' })
+    } catch (error) {
         res.status(500).json({ error: "Failed to delete character" });
         console.error("Error:", error);
     }
 });
 
-router.post("/update", async (req, res) => {  
+router.post("/update", async (req, res) => {
     try {
         const { token, _id, info } = req.body;
         // decodes token
@@ -122,13 +136,13 @@ router.post("/update", async (req, res) => {
         userID = decoded.id;
 
 
-    }catch (error) {
+    } catch (error) {
         res.status(500).json({ error: "Failed to update character" });
         console.error("Error:", error);
-    }  
+    }
 });
 
-router.post("/info", async (req, res) => {    
+router.post("/info", async (req, res) => {
     try {
         const { token, _id } = req.body;
         // decodes token
@@ -136,16 +150,16 @@ router.post("/info", async (req, res) => {
 
         userID = decoded.id;
 
-        const characterInfo = await Character.findOne({userId: userID, _id: new ObjectId(_id)});
+        const characterInfo = await Character.findOne({ userId: userID, _id: new ObjectId(_id) });
 
         res.status(200).json(characterInfo)
-    }catch (error) {
+    } catch (error) {
         res.status(500).json({ error: "Failed to get character information" });
         console.error("Error:", error);
     }
 });
 
-router.post("/characters", async (req, res) => {    
+router.post("/characters", async (req, res) => {
     try {
         const { token } = req.body;
         // decodes token
@@ -153,10 +167,10 @@ router.post("/characters", async (req, res) => {
 
         userID = decoded.id;
 
-        const characters = await Character.find( {userId: userID},{characterName:true} );
+        const characters = await Character.find({ userId: userID }, { characterName: true });
 
         res.status(200).json(characters)
-    }catch (error) {
+    } catch (error) {
         res.status(500).json({ error: "Failed to get user characters" });
         console.error("Error:", error);
     }
