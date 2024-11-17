@@ -8,7 +8,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 //Internal Imports
 import LogoutButton from "@/components/logoutButton";
 import { ThemeColors } from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import DropDown from "@/components/dropDown";
 import AddCharacterModal from "@/components/addCharacterModal";
 
@@ -125,28 +125,24 @@ export default function WelcomeScreen() {
           scrollEnabled={false}
           keyExtractor={item => item._id}
           extraData={listCount}
-          renderItem={({ item, index }) => (
-            <View style={styles.characterListContainer}>
-              <Text style={styles.characterListText}>{item.characterName}</Text>
+          renderItem={({ item, index, }) => (
+            <Link href={{ pathname: "/(app)/characterView", params: { id: item._id }, }} asChild >
+              <Pressable>
+                <View style={styles.characterListContainer}>
+                  <Text style={styles.characterListText}>{item.characterName}</Text>
 
-              <Pressable onPress={() => { removeCharacter(index, item._id) }}>
-                <AntDesign name="delete" size={24} color="white" />
+                  <Pressable onPress={() => { removeCharacter(index, item._id) }}>
+                    <AntDesign name="delete" size={24} color="white" />
+                  </Pressable>
+                </View>
               </Pressable>
-            </View>
+            </Link>
           )}
         />
 
-        {/* <Link href="/CharacterDesign" asChild> */}
-        <Pressable onPress={() => { }}>
-          <Text>Temp</Text>
-        </Pressable>
-        {/* </Link> */}
-
-
-
         <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => { updateList(characterObject) }} />
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 }
 
