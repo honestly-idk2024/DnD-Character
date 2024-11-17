@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const Character = require("../models/Character");
 const router = express.Router();
-var Mongoose = require('mongoose');
 const ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
 
@@ -51,7 +50,7 @@ router.post("/create", async (req, res) => {
         
         res.status(200).json({"_id":character._id, "characterName": character.characterName})
     } catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+        res.status(500).json({ error: "Failed to create character" });
         console.error("Error:", error);
     }
 });
@@ -72,7 +71,7 @@ router.post("/delete", async (req, res) => {
         }
         res.status(200).json({success: 'Successful Deletion' })
     }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+        res.status(500).json({ error: "Failed to delete character" });
         console.error("Error:", error);
     }
 });
@@ -87,7 +86,7 @@ router.post("/update", async (req, res) => {
 
 
     }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+        res.status(500).json({ error: "Failed to update character" });
         console.error("Error:", error);
     }  
 });
@@ -99,6 +98,10 @@ router.post("/info", async (req, res) => {
         var decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         userID = decoded.id;
+
+        const characterInfo = await Character.findOne({userId: userID, _id: new ObjectId(_id)});
+
+        res.status(200).json(characterInfo)
     }catch (error) {
         res.status(500).json({ error: "Failed to get character information" });
         console.error("Error:", error);
