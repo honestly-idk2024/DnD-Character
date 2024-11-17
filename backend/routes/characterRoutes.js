@@ -19,6 +19,9 @@ router.post("/create", async (req, res) => {
 
         userID = decoded.id;
         // Create new user
+
+        let external = await externalAPI(race)
+        console.log(external)
         const newCharacter = new Character({
             userId: userID,
             characterName: characterName,
@@ -26,7 +29,8 @@ router.post("/create", async (req, res) => {
 
             class: characterClass,
             race: race,
-            alignment: null,
+            alignment: external.alignment,
+            speed: external.speed,
             // AC 10 + dex mod
             AC: 10,
             HP: null,
@@ -47,6 +51,7 @@ router.post("/create", async (req, res) => {
         });
 
         const character = await newCharacter.save();
+        console.log(character)
         
         res.status(200).json({"_id":character._id, "characterName": character.characterName})
     } catch (error) {
@@ -54,6 +59,38 @@ router.post("/create", async (req, res) => {
         console.error("Error:", error);
     }
 });
+
+async function externalAPI(race)
+{
+    let url = ''
+    switch(race)
+    {
+        case 'Dragonborn':
+            url = 'https://www.dnd5eapi.co/api/races/dragonborn'
+        case 'Dwarf':
+            url = 'https://www.dnd5eapi.co/api/races/dwarf'
+        case 'Elf':
+            url = 'https://www.dnd5eapi.co/api/races/elf'
+        case 'Gnome':
+            url = 'https://www.dnd5eapi.co/api/races/gnome'
+        case 'Half-Elf':
+            url = 'https://www.dnd5eapi.co/api/races/half-elf'
+        case 'Half-Orc':
+            url = 'https://www.dnd5eapi.co/api/races/half-orc'
+        case 'Halfling':
+            url = 'https://www.dnd5eapi.co/api/races/halfling'
+        case 'Human':
+            url = 'https://www.dnd5eapi.co/api/races/human'
+        case 'Tiefling':
+            url = 'https://www.dnd5eapi.co/api/races/tiefling'
+    }
+    
+    const external = await fetch(url)
+    const json = await external.json();
+    
+    return {alignment: json.alignment, speed: json.speed}
+    
+}
 
 router.post("/delete", async (req, res) => {    
     try {
@@ -118,7 +155,6 @@ router.post("/characters", async (req, res) => {
 
         const characters = await Character.find( {userId: userID},{characterName:true} );
 
-        //returns _id, and characterName
         res.status(200).json(characters)
     }catch (error) {
         res.status(500).json({ error: "Failed to get user characters" });
