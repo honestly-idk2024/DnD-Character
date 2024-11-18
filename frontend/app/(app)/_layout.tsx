@@ -25,7 +25,7 @@ export default function AppLayout() {
     }
     }}>
     <Stack.Screen name='index' 
-      options={{ title:"Home", headerRight: () => (
+      options={{ title:"DnD Forge", headerRight: () => (
         <Link href='/profile' asChild>
           <Pressable>
             <UserIcon colorBorder='white' containerSize={36}/>
