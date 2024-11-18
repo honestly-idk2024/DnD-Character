@@ -29,13 +29,8 @@ export default function AddCharacterModal(props: propValue) {
         { title: "Half-Elf", },
         { title: "Half-Orc", },
         { title: "Halfing", },
-        { title: "High Elf", },
         { title: "Human", },
         { title: "Tiefling", },
-        { title: "Drow", },
-        { title: "Gearforged", },
-        { title: "Minotaur", },
-        { title: "Catfolk", },
     ];
     const classes=[
         { title: "Barbarian", },
