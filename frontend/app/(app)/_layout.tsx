@@ -25,7 +25,7 @@ export default function AppLayout() {
     }
     }}>
     <Stack.Screen name='index' 
-      options={{ title:"Home", headerRight: () => (
+      options={{ title:"DnD Forge", headerRight: () => (
         <Link href='/profile' asChild>
           <Pressable>
             <UserIcon colorBorder='white' containerSize={36}/>
@@ -33,7 +33,7 @@ export default function AppLayout() {
         </Link>
         ) }} />
     <Stack.Screen name='profile' options={{title:'Profile'}} />
-    <Stack.Screen name="characterView" options={{title:'Character View'}}/>
+    <Stack.Screen name="CharacterDesign" />
   </Stack>
   )
 }
