@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const Character = require("../models/Character");
 const router = express.Router();
-var Mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
 
 
@@ -19,6 +19,9 @@ router.post("/create", async (req, res) => {
 
         userID = decoded.id;
         // Create new user
+
+        let external = await externalAPI(race)
+
         const newCharacter = new Character({
             userId: userID,
             characterName: characterName,
@@ -26,7 +29,8 @@ router.post("/create", async (req, res) => {
 
             class: characterClass,
             race: race,
-            alignment: null,
+            alignment: external.alignment,
+            speed: external.speed,
             // AC 10 + dex mod
             AC: 10,
             HP: null,
@@ -47,56 +51,115 @@ router.post("/create", async (req, res) => {
         });
 
         const character = await newCharacter.save();
-        
-        console.log(character)
 
-        res.status(200).json({"_id":character._id, "characterName": character.characterName})
+
+        res.status(200).json({ "_id": character._id, "characterName": character.characterName })
     } catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+        res.status(500).json({ error: "Failed to create character" });
         console.error("Error:", error);
     }
 });
 
-router.post("/delete", async (req, res) => {    
+async function externalAPI(race) {
+    try {
+        let url = ''
+        
+        switch (race) {
+            case 'Dragonborn':
+                url = 'https://www.dnd5eapi.co/api/races/dragonborn'
+                break
+            case 'Dwarf':
+                url = 'https://www.dnd5eapi.co/api/races/dwarf'
+                break
+            case 'Elf':
+                url = 'https://www.dnd5eapi.co/api/races/elf'
+                break
+            case 'Gnome':
+                url = 'https://www.dnd5eapi.co/api/races/gnome'
+                break
+            case 'Half-Elf':
+                url = 'https://www.dnd5eapi.co/api/races/half-elf'
+                break
+            case 'Half-Orc':
+                url = 'https://www.dnd5eapi.co/api/races/half-orc'
+                break
+            case 'Halfling':
+                url = 'https://www.dnd5eapi.co/api/races/halfling'
+                break
+            case 'Human':
+                url = 'https://www.dnd5eapi.co/api/races/human'
+                break
+            case 'Tiefling':
+                url = 'https://www.dnd5eapi.co/api/races/tiefling'
+                break
+            default:
+                throw new TypeError('Invalid Race');
+                break
+        }
+        
+
+        const external = await fetch(url)
+        const json = await external.json();
+
+        return { alignment: json.alignment, speed: json.speed }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+router.post("/delete", async (req, res) => {
     try {
         const { token, _id } = req.body;
         // decodes token
         var decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         userID = decoded.id;
-    }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+
+        const characterDeleted = await Character.deleteOne({ userId: userID, _id: new ObjectId(_id) });
+        console.log(characterDeleted)
+        if (characterDeleted.deletedCount != 1) {
+            throw new TypeError('Issue has occured while deleting');
+        }
+        res.status(200).json({ success: 'Successful Deletion' })
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete character" });
         console.error("Error:", error);
     }
 });
 
-router.post("/update", async (req, res) => {  
+router.post("/update", async (req, res) => {
     try {
         const { token, _id, info } = req.body;
         // decodes token
         var decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         userID = decoded.id;
-    }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+
+
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update character" });
         console.error("Error:", error);
-    }  
+    }
 });
 
-router.post("/info", async (req, res) => {    
+router.post("/info", async (req, res) => {
     try {
         const { token, _id } = req.body;
         // decodes token
         var decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         userID = decoded.id;
-    }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+
+        const characterInfo = await Character.findOne({ userId: userID, _id: new ObjectId(_id) });
+
+        res.status(200).json(characterInfo)
+    } catch (error) {
+        res.status(500).json({ error: "Failed to get character information" });
         console.error("Error:", error);
     }
 });
 
-router.post("/characters", async (req, res) => {    
+router.post("/characters", async (req, res) => {
     try {
         const { token } = req.body;
         // decodes token
@@ -104,15 +167,11 @@ router.post("/characters", async (req, res) => {
 
         userID = decoded.id;
 
-        console.log(userID)
-        const characters = await Character.find( {userId: userID},{characterName:true} );
+        const characters = await Character.find({ userId: userID }, { characterName: true });
 
-        console.log(characters)
-
-        //returns _id, and characterName
         res.status(200).json(characters)
-    }catch (error) {
-        res.status(500).json({ error: "Failed to register user" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to get user characters" });
         console.error("Error:", error);
     }
 });
