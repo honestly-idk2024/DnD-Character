@@ -42,7 +42,7 @@ export default function HomeScreen() {
   const loginUserHandle = async () => {
     if (isLoggingIn) {
       if (email === "" || password === "") {
-        setMessage("Fill out fields");
+        setMessage("Please fill out all fields.");
         return;
       }
     } else {
@@ -52,7 +52,7 @@ export default function HomeScreen() {
         firstName === "" ||
         lastName === ""
       ) {
-        setMessage("Fill out fields");
+        setMessage("Fill fill out all fields.");
         return;
       }
     }
@@ -186,7 +186,7 @@ export default function HomeScreen() {
           </View>
         </Pressable>
 
-        {!message && (<Text>{message}</Text>)}
+        {message ? <Text style={styles.message}>{message}</Text> : null}
 
         {!isLoggingIn && (
           <View style={styles.changeViewContainer}>
@@ -289,6 +289,10 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontWeight: 'bold',
     color: 'white'
-  }
+  },
+  message: {
+    color: 'red',
+    textAlign: 'center',
+  },
 
 });
