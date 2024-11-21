@@ -44,7 +44,6 @@ export default function WelcomeScreen() {
         setCharacterList(result);
         setListCount(result.length)
 
-
         if (result.error) {
           throw new TypeError('Failed');
         }
@@ -56,11 +55,6 @@ export default function WelcomeScreen() {
     }
     getCharacterList()
   },[]);
-
-  const checkDeleteConfirmed = () => {
-
-
-  }
 
   function removeCharacter(position: number) {
 
@@ -76,7 +70,6 @@ export default function WelcomeScreen() {
     if (deleteCharacterConfirmed == true)
       {
     
-
         let list = characterList
         list.splice(position, 1)
     
@@ -85,7 +78,6 @@ export default function WelcomeScreen() {
   
       }
     */
-
 
   }
 
@@ -138,8 +130,6 @@ export default function WelcomeScreen() {
           <Text>Temp</Text>
         </Pressable>
         {/* </Link> */}
-
-
         
         <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => {updateList(characterObject)}}/>
         <DeleteCharacterModal isVisible={deleteCharacterModalVisible} close={() => { setDeleteCharacterModalVisible(false) }}/>
