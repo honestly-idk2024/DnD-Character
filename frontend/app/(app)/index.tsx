@@ -11,14 +11,17 @@ import { ThemeColors } from "@/constants/Colors";
 import { Link } from "expo-router";
 import DropDown from "@/components/dropDown";
 import AddCharacterModal from "@/components/addCharacterModal";
+import DeleteCharacterModal from "@/components/deleteCharacterModal";
 
 
 export default function WelcomeScreen() {
   const envIP = process.env.EXPO_PUBLIC_IP;
 
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [deleteCharacterModalVisible, setDeleteCharacterModalVisible] = useState(false);
   const [listCount, setListCount] = useState(0);
   const [characterList, setCharacterList] = useState<any>([]);
+  const [deleteCharacterConfirmed, setDeleteCharacterConfirmed] = useState(false);
 
   //Pull Info from Local Storage
   useEffect(() => {
@@ -54,6 +57,11 @@ export default function WelcomeScreen() {
     getCharacterList()
   },[]);
 
+  const checkDeleteConfirmed = () => {
+
+
+  }
+
   function removeCharacter(position: number) {
 
     let list = characterList
@@ -61,6 +69,24 @@ export default function WelcomeScreen() {
 
     setCharacterList(list)
     setListCount(listCount - 1)
+
+    /* Still a work in progress for delete confirmation
+    setDeleteCharacterModalVisible(true)
+
+    if (deleteCharacterConfirmed == true)
+      {
+    
+
+        let list = characterList
+        list.splice(position, 1)
+    
+        setCharacterList(list)
+        setListCount(listCount - 1)
+  
+      }
+    */
+
+
   }
 
   function updateList(characterObject: {_id: string, characterName: string}){
@@ -116,6 +142,8 @@ export default function WelcomeScreen() {
 
         
         <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => {updateList(characterObject)}}/>
+        <DeleteCharacterModal isVisible={deleteCharacterModalVisible} close={() => { setDeleteCharacterModalVisible(false) }}/>
+
       </View>
     </ScrollView>
   );
