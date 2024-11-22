@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeColors } from '@/constants/Colors';
 import DropDown from './dropDown';
 
-
 type propValue = {
     isVisible: boolean;
     setCharacterList: Dispatch<SetStateAction<string>>;
@@ -20,6 +19,7 @@ export default function AddCharacterModal(props: propValue) {
     const [level, setLevel] = useState('')
     const [race, setRace] = useState('')
     const [characterClass, setCharacterClass] = useState('')
+    const [createCharacterMessage, setCreateCharacterMessage] = useState("");
 
     const races = [
         { title: "Dragonborn", },
@@ -69,6 +69,30 @@ export default function AddCharacterModal(props: propValue) {
         { title: "20", },
     ];
 
+    const checkFields = () => {
+
+        if (
+            characterName == "" ||
+            characterClass == "" ||
+            level == "" ||
+            race == "" 
+        )
+        {
+
+            setCreateCharacterMessage("Please complete all fields.");
+            
+        }
+        else {
+
+            createCharacter(), 
+            props.close(), 
+            setCharacterName(''),
+            setCreateCharacterMessage('');
+
+        }
+
+    }
+
     async function createCharacter() {
         const tokenResult = await AsyncStorage.getItem("token");
         const url = "http://"+envIP+":5000/character/create";
@@ -95,9 +119,8 @@ export default function AddCharacterModal(props: propValue) {
           console.log("error", error);
     
         }
-      }
+    }
     
-
     return (
         <Modal transparent visible={props.isVisible}>
             <View style={styles.modalContainer}>
@@ -118,28 +141,31 @@ export default function AddCharacterModal(props: propValue) {
                         <DropDown dropDownList={classes} title={"Select Class"} setMyVar={setCharacterClass}/>
                         <Text>Level</Text>
                         <DropDown dropDownList={levels} title={"Select Level"} setMyVar={setLevel}/>
-
                     </View>
+
+                    {createCharacterMessage ? <Text style={styles.message}>{createCharacterMessage}</Text> : null}   
+                    
                     <View style={styles.buttonContainer}>
-                        <Pressable onPress={() => { props.close(), setCharacterName('') }} style={styles.cancelButton}>
+                        <Pressable onPress={() => { props.close(), setCharacterName(''), setCreateCharacterMessage('') }} style={styles.cancelButton}>
                             <View>
                                 <Text style={styles.buttonText}>Cancel</Text>
                             </View>
                         </Pressable>
-                        <Pressable onPress={() => { createCharacter(), props.close(), setCharacterName('')  }} style={styles.confirmButton}>
+                        <Pressable onPress={() => { checkFields()  }} style={styles.confirmButton}>
                             <View>
                                 <Text style={styles.buttonText}>Confirm</Text>
                             </View>
                         </Pressable>
-                    </View>
-                </View>
-            </View>
 
+                    </View>
+
+                </View>
+
+            </View>
 
         </Modal>
     )
 }
-
 
 const styles = StyleSheet.create({
     modalContainer: {
@@ -209,4 +235,8 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
     },
+    message: {
+        color: 'red',
+        textAlign: 'center',
+      },
 })
