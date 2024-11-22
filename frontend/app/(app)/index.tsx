@@ -98,7 +98,7 @@ export default function WelcomeScreen() {
 
   }
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
 
       <View style={styles.subHeader}>
         <Pressable onPress={() => { setModalVisible(true) }}>
@@ -126,7 +126,7 @@ export default function WelcomeScreen() {
           keyExtractor={item => item._id}
           extraData={listCount}
           renderItem={({ item, index, }) => (
-            <Link href={{ pathname: "/(app)/characterView", params: { id: item._id }, }} asChild >
+            <Link href={{ pathname: "/(app)/characterView", params: { id: item._id },  }} asChild >
               <Pressable>
                 <View style={styles.characterListContainer}>
                   <Text style={styles.characterListText}>{item.characterName}</Text>
@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
   subHeader: {
     flex: 1,
     flexDirection: 'row',
-    maxHeight: 32,
     minHeight: 32,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -165,6 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 2,
+    marginVertical: 8,
   },
   //Add Character Sytles
   addCharacterContainer: {

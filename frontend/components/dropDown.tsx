@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   dropdownMenuStyle: {
     backgroundColor: 'white',
     borderRadius: 8,
+    height: 48*4,
   },
   dropdownItemStyle: {
     width: '100%',
