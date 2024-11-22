@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeColors } from '@/constants/Colors';
 
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 export default function CharacterView() {
   const envIP = process.env.EXPO_PUBLIC_IP;
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -90,6 +92,12 @@ export default function CharacterView() {
     }
     getCharacterInfo()
   }, []);
+
+
+  function editing()
+  {
+    
+  }
   return (
     <SafeAreaView>
       
@@ -139,11 +147,15 @@ export default function CharacterView() {
 
             />
           </View>
+          <View style={styles.verticalLine}></View>
+          <MaterialCommunityIcons name="square-edit-outline" size={26} color='white' style={{alignSelf: 'center'}} />
         </View>
+
         <ScrollView showsVerticalScrollIndicator={false}>
         {/* Main Body */}
-
+    
         <View style={styles.mainBodyContainer}>
+
           <View style={styles.infoContainer}>
             <Text style={styles.infoHeaderText}>Name</Text>
             <TextInput
@@ -381,6 +393,13 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     textAlign: 'left',
+  },
+  verticalLine:
+  {
+    height: '70%',
+    width: 1,
+    backgroundColor: 'white',
+    alignSelf: 'center'
   },
   //body start
   mainBodyContainer:
