@@ -20,7 +20,7 @@ export default function WelcomeScreen() {
   const [deleteCharacterModalVisible, setDeleteCharacterModalVisible] = useState(false);
   const [listCount, setListCount] = useState(0);
   const [characterList, setCharacterList] = useState<any>([]);
-  const [deleteCharacterConfirmed, setDeleteCharacterConfirmed] = useState(false);
+  const [delCharInfo, setDelCharInfo] = useState<any>({position: Number, _id: String})
 
 
   //Pull Info from Local Storage
@@ -57,15 +57,14 @@ export default function WelcomeScreen() {
     getCharacterList()
   }, []);
 
-  async function removeCharacter(position: number, _id: string) {
+  async function removeCharacter() {
+
+
     const tokenResult = await AsyncStorage.getItem("token");
     const url = "http://" + envIP + ":5000/character/delete";
-    const body = { token: tokenResult, _id: _id };
+    const body = { token: tokenResult, _id: delCharInfo._id };
 
-    setDeleteCharacterModalVisible(true)
-
-    if (deleteCharacterConfirmed == true)
-    {
+    
   
       try {
         const response = await fetch(url, {
@@ -84,7 +83,7 @@ export default function WelcomeScreen() {
         }
 
         let list = characterList
-        list.splice(position, 1)
+        list.splice(delCharInfo.position, 1)
 
         setCharacterList(list)
         setListCount(listCount - 1)
@@ -98,7 +97,7 @@ export default function WelcomeScreen() {
 
       }
     
-    }
+    
 
   }
 
@@ -141,7 +140,8 @@ export default function WelcomeScreen() {
                 <View style={styles.characterListContainer}>
                   <Text style={styles.characterListText}>{item.characterName}</Text>
 
-                  <Pressable onPress={() => { removeCharacter(index, item._id) }}>
+                  {/* <Pressable onPress={() => { removeCharacter(index, item._id) }}> */}
+                  <Pressable onPress={() => { setDeleteCharacterModalVisible(true);let t = {position: index, _id: item._id}; setDelCharInfo(t) }}>
                     <AntDesign name="delete" size={24} color="white" />
                   </Pressable>
                 </View>
@@ -151,7 +151,7 @@ export default function WelcomeScreen() {
         />
 
         <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => { updateList(characterObject) }} />
-        <DeleteCharacterModal isVisible={deleteCharacterModalVisible} close={() => { setDeleteCharacterModalVisible(false) }}/>
+        <DeleteCharacterModal isVisible={deleteCharacterModalVisible} close={() => { setDeleteCharacterModalVisible(false) }} delete={() =>{removeCharacter(), setDeleteCharacterModalVisible(false)}}/>
 
       </View>
     </ScrollView >
