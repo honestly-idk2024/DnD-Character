@@ -33,7 +33,7 @@ export default function AppLayout() {
         </Link>
         ) }} />
     <Stack.Screen name='profile' options={{title:'Profile'}} />
-    <Stack.Screen name="CharacterDesign" />
+    <Stack.Screen name="characterView" options={{title:'Character'}} />
   </Stack>
   )
 }
