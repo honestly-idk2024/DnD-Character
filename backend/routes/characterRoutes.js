@@ -31,7 +31,6 @@ router.post("/create", async (req, res) => {
             race: race,
             alignment: external.alignment,
             speed: external.speed,
-            // AC 10 + dex mod
             AC: 10,
             HP: null,
 
@@ -63,7 +62,7 @@ router.post("/create", async (req, res) => {
 async function externalAPI(race) {
     try {
         let url = ''
-        
+
         switch (race) {
             case 'Dragonborn':
                 url = 'https://www.dnd5eapi.co/api/races/dragonborn'
@@ -96,7 +95,7 @@ async function externalAPI(race) {
                 throw new TypeError('Invalid Race');
                 break
         }
-        
+
 
         const external = await fetch(url)
         const json = await external.json();
@@ -135,7 +134,34 @@ router.post("/update", async (req, res) => {
 
         userID = decoded.id;
 
+        const characterUpdated = await Character.updateOne({ userId: userID, _id: new ObjectId(_id) },
+            {
+                characterName: info.characterName,
+                level: info.level,
+                class: info.class,
+                race: info.race,
+                alignment: info.alignment,
+                speed: info.speed,
+                // AC 10 + dex mod
+                AC: info.AC,
+                HP: info.HP,
 
+                statStr: info.statStr,
+                statDex: info.statDex,
+                statCon: info.statCon,
+                statInt: info.statInt,
+                statWis: info.statWis,
+                statChar: info.statChar,
+
+                appearance: info.appearance,
+                personalityTraits: info.personalityTraits,
+                ideals: info.ideals,
+                bonds: info.bonds,
+                flaws: info.flaws,
+                background: info.background,
+            });
+        console.log(characterUpdated)
+        res.status(200).json({ success: 'Successful Update' })
     } catch (error) {
         res.status(500).json({ error: "Failed to update character" });
         console.error("Error:", error);

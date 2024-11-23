@@ -11,11 +11,10 @@ export default function CharacterView() {
   const envIP = process.env.EXPO_PUBLIC_IP;
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const [characterInfo, setCharacterInfo] = useState();
   const [editable, setEditable] = useState(false);
 
   const [characterName, setCharacterName] = useState('');
-  const [test, setTest] = useState('')
+  const [level, setLevel] = useState('')
   const [characterClass, setCharacterClass] = useState('');
   const [characterRace, setCharacterRace] = useState('');
   const [alignment, setAlignment] = useState('');
@@ -37,130 +36,175 @@ export default function CharacterView() {
 
 
   useEffect(() => {
-    async function getCharacterInfo() {
-      const tokenResult = await AsyncStorage.getItem("token");
-      const url = "http://" + envIP + ":5000/character/info";
-      const body = { token: tokenResult, _id: id };
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        });
-
-        const result = await response.json();
-        console.log(result)
-        console.log(result.level)
-        setCharacterInfo(result.characterName)
-        console.log(characterName)
-      
-
-        setSpeed(result.speed)
-        setAC(result.ac)
-        setHP(result.hp)
-
-        setCharacterName(result.characterName)
-        setCharacterClass(result.class)
-        setCharacterRace(result.race)
-        setTest(result.level)
-        setStatStr(result.statStr)
-        setStatDex(result.statDex)
-        setStatCon(result.statCon)
-        setStatInt(result.statInt)
-        setStatWis(result.statWis)
-        setStatChar(result.statChar)
-
-        setAlignment(result.alignment)
-        setAppearance(result.appearance)
-        setPersonalityTraits(result.personalityTraits)
-        setIdeals(result.ideals)
-        setBonds(result.bonds)
-        setFlaws(result.flaws)
-        setBackground(result.background)
-
-        if (result.error) {
-          throw new TypeError('Failed');
-        }
-
-      } catch (error) {
-        console.log("error", error);
-
-      }
-    }
     getCharacterInfo()
   }, []);
 
 
-  function editing()
-  {
-    
+  async function getCharacterInfo() {
+    const tokenResult = await AsyncStorage.getItem("token");
+    const url = "http://" + envIP + ":5000/character/info";
+    const body = { token: tokenResult, _id: id };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const result = await response.json();
+
+      setSpeed(result.speed)
+      setAC(result.AC)
+      setHP(result.HP)
+      console.log(result)
+      console.log(result.HP)
+      setCharacterName(result.characterName)
+      setCharacterClass(result.class)
+      setCharacterRace(result.race)
+      setLevel(result.level)
+      setStatStr(result.statStr)
+      setStatDex(result.statDex)
+      setStatCon(result.statCon)
+      setStatInt(result.statInt)
+      setStatWis(result.statWis)
+      setStatChar(result.statChar)
+
+      setAlignment(result.alignment)
+      setAppearance(result.appearance)
+      setPersonalityTraits(result.personalityTraits)
+      setIdeals(result.ideals)
+      setBonds(result.bonds)
+      setFlaws(result.flaws)
+      setBackground(result.background)
+
+      if (result.error) {
+        throw new TypeError('Failed');
+      }
+
+    } catch (error) {
+      console.log("error", error);
+
+    }
+  }
+
+  async function updateCharacterInfo() {
+    const tokenResult = await AsyncStorage.getItem("token");
+    const url = "http://" + envIP + ":5000/character/update";
+    const characterInfo =
+    {
+      characterName: characterName,
+      level: level,
+      class: characterClass,
+      race: characterRace,
+      alignment: alignment,
+      speed: speed,
+      AC: ac,
+      HP: hp,
+
+      statStr: statStr,
+      statDex: statDex,
+      statCon: statCon,
+      statInt: statInt,
+      statWis: statWis,
+      statChar: statChar,
+
+      appearance: appearance,
+      personalityTraits: personalityTraits,
+      ideals: ideals,
+      bonds: bonds,
+      flaws: flaws,
+      background: background,
+    }
+    console.log(characterInfo)
+    console.log(hp)
+
+    const body = { token: tokenResult, _id: id, info: characterInfo };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const result = await response.json();
+      console.log(result)
+
+    } catch (error) {
+      console.log("error", error);
+
+    }
   }
   return (
     <SafeAreaView>
-      
-        {/* Subheader */}
-        <View style={styles.subHeader}>
+
+      {/* Subheader */}
+      <View style={styles.subHeader}>
         <View style={styles.subheaderInfo}>
-            <Text style={styles.infoHeaderText}>Level:</Text>
-            <TextInput
-              //style={styles.input}
-              //onChangeText={(text) => setLastName(text)}
-              value={test}
-              editable={editable}
-              placeholder="N/A"
-            />
-          </View>
-          <View style={styles.subheaderInfo}>
-            <Text style={styles.infoHeaderText}>HP:</Text>
-            <TextInput
-              //style={styles.input}
-              //onChangeText={(text) => setLastName(text)}
-              value={hp}
-              editable={editable}
-              autoCapitalize={"sentences"}
-              placeholder="N/A"
-            />
-          </View>
-          <View style={styles.subheaderInfo}>
-            <Text style={styles.infoHeaderText}>AC:</Text>
-            <TextInput
-              //style={styles.input}
-              //onChangeText={(text) => setLastName(text)}
-              value={ac}
-              editable={editable}
-              autoCapitalize={"sentences"}
-              placeholder="N/A"
-            />
-          </View>
-          <View style={styles.subheaderInfo}>
-            <Text style={styles.infoHeaderText}>Speed:</Text>
-            <TextInput
-              //style={styles.input}
-              //onChangeText={(text) => setLastName(text)}
-              value={speed + 'ft'}
-              editable={editable}
-              autoCapitalize={"sentences"}
-              placeholder="N/A"
-
-            />
-          </View>
-          <View style={styles.verticalLine}></View>
-          <MaterialCommunityIcons name="square-edit-outline" size={26} color='white' style={{alignSelf: 'center'}} />
+          <Text style={styles.infoHeaderText}>Level:</Text>
+          <TextInput
+            onChangeText={(text) => setLevel(text)}
+            value={level}
+            editable={editable}
+            placeholder="N/A"
+          />
         </View>
+        <View style={styles.subheaderInfo}>
+          <Text style={styles.infoHeaderText}>HP:</Text>
+          <TextInput
+            onChangeText={(text) => setHP(text)}
+            value={hp}
+            editable={editable}
+            autoCapitalize={"sentences"}
+            placeholder="N/A"
+          />
+        </View>
+        <View style={styles.subheaderInfo}>
+          <Text style={styles.infoHeaderText}>AC:</Text>
+          <TextInput
+            onChangeText={(text) => setAC(text)}
+            value={ac}
+            editable={editable}
+            autoCapitalize={"sentences"}
+            placeholder="N/A"
+          />
+        </View>
+        <View style={styles.subheaderInfo}>
+          <Text style={styles.infoHeaderText}>Speed:</Text>
+          <TextInput
+            onChangeText={(text) => setSpeed(text)}
+            value={speed}
+            editable={editable}
+            autoCapitalize={"sentences"}
+            placeholder="N/A"
 
-        <ScrollView showsVerticalScrollIndicator={false}>
+          />
+        </View>
+        {!editable && (
+          <>
+            <View style={styles.verticalLine}></View>
+            <Pressable onPress={() => { setEditable(true) }} style={{ alignSelf: 'center' }}>
+              <MaterialCommunityIcons name="square-edit-outline" size={26} color='white' />
+            </Pressable>
+          </>
+        )}
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Main Body */}
-    
+
         <View style={styles.mainBodyContainer}>
 
           <View style={styles.infoContainer}>
             <Text style={styles.infoHeaderText}>Name</Text>
             <TextInput
               style={styles.basicCharacterInfoField}
-              //onChangeText={(text) => setLastName(text)}
+              onChangeText={(text) => setCharacterName(text)}
               value={characterName}
               editable={editable}
               autoCapitalize={"sentences"}
@@ -172,9 +216,9 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Race</Text>
               <TextInput
                 style={{ ...styles.basicCharacterInfoField, ...{ minWidth: '40%', textAlign: 'center' } }}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setCharacterRace(text)}
                 value={characterRace}
-                editable={editable}
+
                 autoCapitalize={"sentences"}
                 placeholder="N/A"
               />
@@ -183,9 +227,8 @@ export default function CharacterView() {
               <Text style={{ ...styles.infoHeaderText, ...{ textAlign: 'left' } }}>Class</Text>
               <TextInput
                 style={{ ...styles.basicCharacterInfoField, ...{ minWidth: '40%', textAlign: 'center' } }}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setCharacterClass(text)}
                 value={characterClass}
-                editable={editable}
                 autoCapitalize={"sentences"}
                 placeholder="N/A"
               />
@@ -199,7 +242,7 @@ export default function CharacterView() {
                 <Text style={styles.statText}>Strength</Text>
                 <TextInput
                   style={styles.statInfoField}
-                  //onChangeText={(text) => setLastName(text)}
+                  onChangeText={(text) => setStatStr(text)}
                   value={statStr}
                   editable={editable}
                   autoCapitalize={"sentences"}
@@ -210,7 +253,7 @@ export default function CharacterView() {
                 <Text style={styles.statText}>Dexterity</Text>
                 <TextInput
                   style={styles.statInfoField}
-                  //onChangeText={(text) => setLastName(text)}
+                  onChangeText={(text) => setStatDex(text)}
                   value={statDex}
                   editable={editable}
                   autoCapitalize={"sentences"}
@@ -221,7 +264,7 @@ export default function CharacterView() {
                 <Text style={styles.statText}>Constitution</Text>
                 <TextInput
                   style={styles.statInfoField}
-                  //onChangeText={(text) => setLastName(text)}
+                  onChangeText={(text) => setStatCon(text)}
                   value={statCon}
                   editable={editable}
                   autoCapitalize={"sentences"}
@@ -234,7 +277,7 @@ export default function CharacterView() {
                 <Text style={styles.statText}>Intelligence</Text>
                 <TextInput
                   style={styles.statInfoField}
-                  //onChangeText={(text) => setLastName(text)}
+                  onChangeText={(text) => setStatInt(text)}
                   value={statInt}
                   editable={editable}
                   autoCapitalize={"sentences"}
@@ -245,7 +288,7 @@ export default function CharacterView() {
                 <Text style={styles.statText}>Wisdom</Text>
                 <TextInput
                   style={styles.statInfoField}
-                  //onChangeText={(text) => setLastName(text)}
+                  onChangeText={(text) => setStatWis(text)}
                   value={statWis}
                   editable={editable}
                   autoCapitalize={"sentences"}
@@ -256,7 +299,7 @@ export default function CharacterView() {
                 <Text style={styles.statText}>Charisma</Text>
                 <TextInput
                   style={styles.statInfoField}
-                  //onChangeText={(text) => setLastName(text)}
+                  onChangeText={(text) => setStatChar(text)}
                   value={statChar}
                   editable={editable}
                   autoCapitalize={"sentences"}
@@ -272,7 +315,7 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Alignment</Text>
               <TextInput
                 style={styles.longTextField}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setAlignment(text)}
                 value={alignment}
                 editable={editable}
                 autoCapitalize={"sentences"}
@@ -286,7 +329,7 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Appearance</Text>
               <TextInput
                 style={styles.longTextField}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setAppearance(text)}
                 value={appearance}
                 editable={editable}
                 autoCapitalize={"sentences"}
@@ -299,7 +342,7 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Personality Traits</Text>
               <TextInput
                 style={styles.longTextField}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setPersonalityTraits(text)}
                 value={personalityTraits}
                 editable={editable}
                 autoCapitalize={"sentences"}
@@ -312,7 +355,7 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Ideals</Text>
               <TextInput
                 style={styles.longTextField}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setIdeals(text)}
                 value={ideals}
                 editable={editable}
                 autoCapitalize={"sentences"}
@@ -325,7 +368,7 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Bonds</Text>
               <TextInput
                 style={styles.longTextField}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setBonds(text)}
                 value={bonds}
                 editable={editable}
                 autoCapitalize={"sentences"}
@@ -338,7 +381,7 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Flaws</Text>
               <TextInput
                 style={styles.longTextField}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setFlaws(text)}
                 value={flaws}
                 editable={editable}
                 autoCapitalize={"sentences"}
@@ -351,7 +394,7 @@ export default function CharacterView() {
               <Text style={styles.infoHeaderText}>Background</Text>
               <TextInput
                 style={styles.longTextField}
-                //onChangeText={(text) => setLastName(text)}
+                onChangeText={(text) => setBackground(text)}
                 value={background}
                 editable={editable}
                 autoCapitalize={"sentences"}
@@ -363,6 +406,23 @@ export default function CharacterView() {
           </View>
         </View>
       </ScrollView>
+      {editable && (
+        <>
+          <View style={styles.subHeader}>
+            <Pressable onPress={() => { setEditable(false), getCharacterInfo() }} style={styles.cancelButton}>
+              <View>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </View>
+            </Pressable>
+            <Pressable onPress={() => { setEditable(false), updateCharacterInfo() }} style={styles.confirmButton}>
+              <View>
+                <Text style={styles.buttonText}>Confirm</Text>
+              </View>
+            </Pressable>
+          </View>
+        </>
+      )}
+
     </SafeAreaView>
   )
 }
@@ -471,7 +531,7 @@ const styles = StyleSheet.create({
   //Big Text Boxes
   textContainer:
   {
-    marginBottom:32,
+    marginBottom: 32,
     gap: 16,
   },
   longTextContainer:
@@ -487,5 +547,34 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 4,
     paddingHorizontal: 8,
-  }
+  },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  cancelButton: {
+    alignSelf: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: ThemeColors['primary'],
+    borderWidth: 4,
+    borderRadius: 999,
+    borderColor: ThemeColors['primary'],
+    left: 8
+  },
+  confirmButton: {
+    alignSelf: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: ThemeColors['primary'],
+    borderWidth: 4,
+    borderRadius: 999,
+    borderColor: ThemeColors['primary'],
+    right: 8
+  },
+  buttonText: {
+    color: 'white',
+  },
 })
