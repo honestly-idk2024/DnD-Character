@@ -2,42 +2,36 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Modal, View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { ThemeColors } from '@/constants/Colors';
-
+import  RemoveCharacter from '@/app/(app)/index';
 
 type propValue = {
     isVisible: boolean;
     close: () => void;
 }
 
+
 export default function DeleteCharacterModal(props: propValue) {
     const [deleteConfirmed, setDeleteConfirmed] = useState(false);
-
-    
-
 
     return (
         <Modal transparent visible={props.isVisible}>
             <View style={styles.modalContainer}>
                 <View style={styles.confirmContainer}>
                 <Text style={styles.confirmDeleteText}>Are you sure you want to delete this character?</Text>
-
                     <View style={styles.buttonContainer}>
                         <Pressable onPress={() => { props.close() }} style={styles.cancelButton}>
                             <View>
                                 <Text style={styles.buttonText}>No</Text>
                             </View>
                         </Pressable>
-                        <Pressable onPress={() => { props.close() }} style={styles.confirmButton}>
+                        <Pressable onPress={() => { setDeleteConfirmed(true), props.close(), console.log(deleteConfirmed) }} style={styles.confirmButton}>
                             <View>
                                 <Text style={styles.buttonText}>Yes</Text>
-                                
                             </View>
                         </Pressable>
                     </View>
                 </View>
             </View>
-
-
         </Modal>
     )
 }
