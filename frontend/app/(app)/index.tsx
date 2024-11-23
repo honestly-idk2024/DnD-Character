@@ -11,14 +11,17 @@ import { ThemeColors } from "@/constants/Colors";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import DropDown from "@/components/dropDown";
 import AddCharacterModal from "@/components/addCharacterModal";
-
+import DeleteCharacterModal from "@/components/deleteCharacterModal";
 
 export default function WelcomeScreen() {
   const envIP = process.env.EXPO_PUBLIC_IP;
 
   const [modalVisible, setModalVisible] = useState(false)
+  const [deleteCharacterModalVisible, setDeleteCharacterModalVisible] = useState(false);
   const [listCount, setListCount] = useState(0);
   const [characterList, setCharacterList] = useState<any>([]);
+  const [deleteCharacterConfirmed, setDeleteCharacterConfirmed] = useState(false);
+
 
   //Pull Info from Local Storage
   useEffect(() => {
@@ -59,35 +62,42 @@ export default function WelcomeScreen() {
     const url = "http://" + envIP + ":5000/character/delete";
     const body = { token: tokenResult, _id: _id };
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+    setDeleteCharacterModalVisible(true)
 
-      const result = await response.json();
+    if (deleteCharacterConfirmed == true)
+    {
+  
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
 
-      if (result.error) {
+        const result = await response.json();
 
-        throw new TypeError('Failed');
+        if (result.error) {
+
+          throw new TypeError('Failed');
+        }
+
+        let list = characterList
+        list.splice(position, 1)
+
+        setCharacterList(list)
+        setListCount(listCount - 1)
+
+        if (result.error) {
+          throw new TypeError('Failed');
+        }
+
+      } catch (error) {
+        console.log("error", error);
+
       }
-
-      let list = characterList
-      list.splice(position, 1)
-
-      setCharacterList(list)
-      setListCount(listCount - 1)
-
-      if (result.error) {
-        throw new TypeError('Failed');
-      }
-
-    } catch (error) {
-      console.log("error", error);
-
+    
     }
 
   }
@@ -141,6 +151,8 @@ export default function WelcomeScreen() {
         />
 
         <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => { updateList(characterObject) }} />
+        <DeleteCharacterModal isVisible={deleteCharacterModalVisible} close={() => { setDeleteCharacterModalVisible(false) }}/>
+
       </View>
     </ScrollView >
   );
