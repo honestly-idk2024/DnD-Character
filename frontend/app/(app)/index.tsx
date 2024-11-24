@@ -119,7 +119,7 @@ export default function WelcomeScreen() {
         <Link href={{ pathname: "/(app)/ar"}} asChild >
         <Pressable>
           <View style={styles.subHeaderButtonAR}>
-            <Text >ARpage</Text>
+            <Text >AR</Text>
           </View>
         </Pressable>
         </Link>
