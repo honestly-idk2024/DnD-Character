@@ -7,11 +7,11 @@ import  RemoveCharacter from '@/app/(app)/index';
 type propValue = {
     isVisible: boolean;
     close: () => void;
+    delete: () => void;
 }
 
 
 export default function DeleteCharacterModal(props: propValue) {
-    const [deleteConfirmed, setDeleteConfirmed] = useState(false);
 
     return (
         <Modal transparent visible={props.isVisible}>
@@ -24,7 +24,7 @@ export default function DeleteCharacterModal(props: propValue) {
                                 <Text style={styles.buttonText}>No</Text>
                             </View>
                         </Pressable>
-                        <Pressable onPress={() => { setDeleteConfirmed(true), props.close(), console.log(deleteConfirmed) }} style={styles.confirmButton}>
+                        <Pressable onPress={() => { props.delete()}} style={styles.confirmButton}>
                             <View>
                                 <Text style={styles.buttonText}>Yes</Text>
                             </View>

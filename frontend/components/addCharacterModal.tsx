@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeColors } from '@/constants/Colors';
 import DropDown from './dropDown';
 
-
 type propValue = {
     isVisible: boolean;
     setCharacterList: Dispatch<SetStateAction<string>>;
@@ -80,9 +79,7 @@ export default function AddCharacterModal(props: propValue) {
         )
         {
 
-
             setCreateCharacterMessage("Please complete all fields.");
-            
             
         }
         else {
@@ -91,7 +88,6 @@ export default function AddCharacterModal(props: propValue) {
             props.close(), 
             setCharacterName(''),
             setCreateCharacterMessage('');
-
 
         }
 
@@ -125,7 +121,6 @@ export default function AddCharacterModal(props: propValue) {
         }
     }
     
-
     return (
         <Modal transparent visible={props.isVisible}>
             <View style={styles.modalContainer}>
@@ -146,10 +141,10 @@ export default function AddCharacterModal(props: propValue) {
                         <DropDown dropDownList={classes} title={"Select Class"} setMyVar={setCharacterClass}/>
                         <Text>Level</Text>
                         <DropDown dropDownList={levels} title={"Select Level"} setMyVar={setLevel}/>
-
                     </View>
 
                     {createCharacterMessage ? <Text style={styles.message}>{createCharacterMessage}</Text> : null}   
+                    
                     <View style={styles.buttonContainer}>
                         <Pressable onPress={() => { props.close(), setCharacterName(''), setCreateCharacterMessage('') }} style={styles.cancelButton}>
                             <View>
@@ -162,7 +157,7 @@ export default function AddCharacterModal(props: propValue) {
                             </View>
                         </Pressable>
 
-                 </View>
+                    </View>
 
                 </View>
 
@@ -171,7 +166,6 @@ export default function AddCharacterModal(props: propValue) {
         </Modal>
     )
 }
-
 
 const styles = StyleSheet.create({
     modalContainer: {

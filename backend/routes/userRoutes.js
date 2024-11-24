@@ -65,6 +65,29 @@ router.post("/login", async (req, res) => {
     }
 });
 
+router.post("/updatePassword", async(req, res)=>
+{
+    try{
+        console.log('hu')
+        const {token, password} = req.body;
+        var decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        userID =decoded.id;
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10); 
+
+        console.log(await User.findByIdAndUpdate(userID, {password: hashedPassword}))
+
+        res.status(200).json({success: 'User Password Updated' });
+
+    }catch(error)
+    {
+        res.status(500).json({ error: "Failed to update user password" });
+        console.error("Error:", error);
+    }
+})
+
 router.post("/update", async(req, res) => {
     try{
         const {token, firstName, lastName} = req.body;

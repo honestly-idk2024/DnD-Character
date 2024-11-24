@@ -1,11 +1,4 @@
-import {
-  Text,
-  TextInput,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Pressable,
-} from "react-native";
+import {  Text, TextInput, SafeAreaView, StyleSheet, View, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -137,9 +130,6 @@ export default function HomeScreen() {
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>{header}</Text>
       </View>
-        
-      
-
       <View style={styles.loginContainer}>
         <Text style={styles.loginHeaderText}>{loginHeader}</Text>
 

@@ -6,19 +6,12 @@ import { ThemeColors } from '@/constants/Colors';
 
 type propValue = {
     isVisible: boolean;
-    passwordPassed: string;
     close: () => void;
     updatePassword: (updatedPassword: string) => void
 }
 
 export default function PasswordModal(props: propValue) {
     const [password, setPassword] = useState('')
-
-	
-    useEffect(() => {
-        setPassword(props.passwordPassed)
-
-    }, [props.isVisible])
 
 
     return (
