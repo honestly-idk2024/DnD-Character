@@ -12,12 +12,14 @@ import { ThemeColors } from "@/constants/Colors";
 
 
 export default function Profile() {
+    const envIP = process.env.EXPO_PUBLIC_IP;
+
     const [nameModalVisible, setNameModalVisible] = useState(false);
     const [passwordModalVisible, setPasswordModalVisible] = useState(false);
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
-    const [password, setPassword] = useState("");
+
 
     //At first render
     useEffect(() => {
@@ -39,7 +41,7 @@ export default function Profile() {
     async function updateName(updatedFirstName: string, updatedLastName: string) {
 
         const tokenResult = await AsyncStorage.getItem("token");
-        const url = "http://10.104.4.132:5000/users/update";
+        const url = "http://" + envIP + ":5000/users/update";
         const body = { token: tokenResult, firstName: updatedFirstName, lastName: updatedLastName};
 
         try {
@@ -71,7 +73,7 @@ export default function Profile() {
     async function updatePassword(updatedPassword: string) {
 
         const tokenResult = await AsyncStorage.getItem("token");
-        const url = "http://10.104.4.132:5000/users/updatePassword";
+        const url = "http://" + envIP + ":5000/users/updatePassword";
         const body = { token: tokenResult, password: updatedPassword};
 
         try {
@@ -84,7 +86,7 @@ export default function Profile() {
             });
 
             const result = await response.json();
-            await AsyncStorage.setItem("password", updatedPassword);
+            console.log(result)
 
             if (result.error) {
                 throw new TypeError('Failed');
@@ -122,7 +124,7 @@ export default function Profile() {
             <LogoutButton/>
 
             <ProfileModal isVisible={nameModalVisible} firstNamePassed={firstName} lastNamePassed={lastName} close={() => { setNameModalVisible(false) }} updateVisibleName={(updatedFirstName, updatedLastName) => { updateName(updatedFirstName, updatedLastName) }} />
-            <PasswordModal isVisible={passwordModalVisible} passwordPassed={password} close={() => { setPasswordModalVisible(false) }} updatePassword={(updatedPassword) => { updatePassword(updatedPassword) }} />
+            <PasswordModal isVisible={passwordModalVisible} close={() => { setPasswordModalVisible(false) }} updatePassword={(updatedPassword) => { updatePassword(updatedPassword) }} />
 
         </SafeAreaView>
     )
