@@ -116,7 +116,17 @@ export default function WelcomeScreen() {
             <Text >Add Character</Text>
           </View>
         </Pressable>
+
+        <Link href={{ pathname: "/(app)/ar"}} asChild >
+        <Pressable>
+          <View style={styles.subHeaderButtonAR}>
+            <Text >ARpage</Text>
+          </View>
+        </Pressable>
+        </Link>
       </View>
+
+      
 
       <View style={styles.listContainer}>
         {listCount == 0 && (
@@ -150,6 +160,8 @@ export default function WelcomeScreen() {
           )}
         />
 
+        
+
         <AddCharacterModal isVisible={modalVisible} close={() => { setModalVisible(false) }} setCharacterList={setCharacterList} updateCharacterList={(characterObject) => { updateList(characterObject) }} />
         <DeleteCharacterModal isVisible={deleteCharacterModalVisible} close={() => { setDeleteCharacterModalVisible(false) }}/>
 
@@ -167,11 +179,20 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: ThemeColors['primary/.75'],
     marginBottom: 32,
+    justifyContent: 'space-between',
   },
   listContainer: {
     alignItems: 'center'
   },
   subHeaderButton: {
+    backgroundColor: 'white',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginVertical: 8,
+    
+  },
+  subHeaderButtonAR: {
     backgroundColor: 'white',
     borderRadius: 999,
     paddingHorizontal: 8,
