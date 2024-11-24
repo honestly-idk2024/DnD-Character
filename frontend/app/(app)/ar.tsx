@@ -39,7 +39,7 @@ export default function App() {
   }
 
   // Render the Three.js scene
-  const onContextCreate = async (gl) => {
+  const onContextCreate = async (gl: any) => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       70,
